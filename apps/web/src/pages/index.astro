@@ -1,0 +1,7 @@
+---
+import { getSession } from "../lib/auth";
+
+const sesion = await getSession(Astro.cookies);
+
+return Astro.redirect(sesion ? "/dashboard" : "/login");
+---

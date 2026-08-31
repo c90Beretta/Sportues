@@ -1,0 +1,45 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  sesion?: { usuario: { email: string } } | null;
+}
+
+const { title, sesion = null } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen bg-slate-100 text-slate-900">
+    {
+      sesion && (
+        <header class="bg-slate-900 text-white">
+          <div class="max-w-4xl mx-auto px-6 py-3 flex items-center justify-between">
+            <nav class="flex items-center gap-4">
+              <strong class="text-lg">🏋️ Gimnasio</strong>
+              <a href="/dashboard" class="text-slate-200 hover:text-white text-sm">Mi rutina</a>
+              <a href="/asistencias" class="text-slate-200 hover:text-white text-sm">Asistencias</a>
+            </nav>
+            <div class="flex items-center gap-3">
+              <span class="text-xs text-slate-300">{sesion.usuario.email}</span>
+              <a
+                href="/api/logout"
+                class="text-xs text-slate-300 border border-slate-600 rounded px-3 py-1 hover:text-white"
+                >Cerrar sesión</a
+              >
+            </div>
+          </div>
+        </header>
+      )
+    }
+    <main class="max-w-4xl mx-auto px-6 py-8">
+      <slot />
+    </main>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "gimnasio",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.21.0",
+  "description": "Proyecto universitario de gestion de gimnasio: API (NestJS), panel de administracion (Next.js) y app publica de estudiantes (Astro).",
+  "scripts": {
+    "dev": "pnpm --filter @gimnasio/shared build && pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "setup:db": "pnpm --filter api prisma:push",
+    "prisma:studio": "pnpm --filter api prisma:studio"
+  }
+}

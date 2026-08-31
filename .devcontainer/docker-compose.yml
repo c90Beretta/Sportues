@@ -1,0 +1,34 @@
+services:
+  workspace:
+    image: node:20
+    container_name: gimnasio-workspace
+    working_dir: /workspace
+    command: sleep infinity
+    volumes:
+      - ..:/workspace
+    environment:
+      DATABASE_URL: postgresql://usuario:password@db:5432/gimnasio
+      JWT_SECRET: dev-secret-cambiar-en-produccion
+      PORT: "3000"
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+      - "4321:4321"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    container_name: gimnasio-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: gimnasio
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

@@ -1,0 +1,23 @@
+{
+  "name": "gimnasio",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "workspace",
+  "workspaceFolder": "/workspace",
+  "forwardPorts": [3000, 3001, 4321],
+  "postCreateCommand": "corepack enable && pnpm install && pnpm --filter @gimnasio/shared build && pnpm --filter api prisma:generate && (test -f apps/api/.env || cp apps/api/.env.example apps/api/.env)",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "prisma.prisma",
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss"
+      ],
+      "settings": {
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "files.eol": "\n"
+      }
+    }
+  }
+}

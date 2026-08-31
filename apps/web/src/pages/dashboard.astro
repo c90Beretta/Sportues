@@ -1,0 +1,83 @@
+---
+import Layout from "../layouts/Layout.astro";
+import RegistrarAsistencia from "../components/RegistrarAsistencia";
+import RegistrarEjercicio from "../components/RegistrarEjercicio";
+import { getSession } from "../lib/auth";
+import { apiGet } from "../lib/api";
+import type { Rutina } from "@gimnasio/shared";
+
+const sesion = await getSession(Astro.cookies);
+if (!sesion) {
+  return Astro.redirect("/login");
+}
+
+let rutinas: Rutina[] = [];
+let error: string | null = null;
+
+try {
+  rutinas = await apiGet<Rutina[]>("/rutinas/mias", sesion);
+} catch (e) {
+  error = e instanceof Error ? e.message : "No se pudieron cargar tus rutinas";
+}
+---
+
+<Layout title="Mi rutina · Gimnasio" sesion={sesion}>
+  <h1 class="text-2xl font-bold mb-4">Mi rutina</h1>
+
+  {
+    error ? (
+      <p class="text-red-600 text-sm">{error}</p>
+    ) : rutinas.length === 0 ? (
+      <div class="bg-white rounded-lg shadow p-6">
+        <p class="text-slate-600">
+          Todavía no tenés rutinas asignadas. Consultá con el personal del gimnasio.
+        </p>
+      </div>
+    ) : (
+      <div class="grid gap-4">
+        {rutinas.map((rutina) => (
+          <section key={rutina.id} class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-semibold">{rutina.nombre}</h2>
+            {rutina.descripcion && (
+              <p class="text-sm text-slate-500 mb-2">{rutina.descripcion}</p>
+            )}
+            <ul class="divide-y divide-slate-100">
+              {rutina.ejercicios.map((eje) => (
+                <li
+                  key={`${rutina.id}-${eje.ejercicioId}`}
+                  class="py-3 flex items-center justify-between gap-4"
+                >
+                  <div>
+                    <div class="font-medium">{eje.nombre ?? eje.ejercicioId}</div>
+                    <div class="text-sm text-slate-500">
+                      {eje.series} series × {eje.repeticiones} repeticiones
+                      {eje.descansoSegundos
+                        ? ` · ${eje.descansoSegundos}s de descanso`
+                        : ""}
+                    </div>
+                  </div>
+                  <RegistrarEjercicio
+                    client:load
+                    rutinaId={rutina.id}
+                    ejercicioId={eje.ejercicioId}
+                    ejercicioNombre={eje.nombre ?? eje.ejercicioId}
+                  />
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+
+        <div class="bg-white rounded-lg shadow p-6 flex items-center justify-between gap-4">
+          <div>
+            <div class="font-semibold">Registrá tu asistencia de hoy</div>
+            <div class="text-sm text-slate-500">
+              Al visitar el gimnasio, hacé check-in para quedar registrado.
+            </div>
+          </div>
+          <RegistrarAsistencia client:load />
+        </div>
+      </div>
+    )
+  }
+</Layout>

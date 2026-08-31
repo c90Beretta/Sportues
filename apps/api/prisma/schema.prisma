@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id           String     @id @default(uuid())
+  nombre       String
+  email        String     @unique
+  passwordHash String
+  rol          String     @default("ESTUDIANTE") // "ESTUDIANTE" | "STAFF"
+  membresiaId  String?
+  membresia    Membresia? @relation(fields: [membresiaId], references: [id])
+  rutinas      Rutina[]
+  asistencias  Asistencia[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Membresia {
+  id           String    @id @default(uuid())
+  nombre       String
+  descripcion  String?
+  precio       Float
+  duracionDias Int
+  usuarios     Usuario[]
+  createdAt    DateTime  @default(now())
+}
+
+model Rutina {
+  id           String            @id @default(uuid())
+  nombre       String
+  descripcion  String?
+  estudianteId String
+  estudiante   Usuario           @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
+  ejercicios   RutinaEjercicio[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+}
+
+model Ejercicio {
+  id             String            @id @default(uuid())
+  nombre         String
+  descripcion    String?
+  grupoMuscular  String?
+  rutinas        RutinaEjercicio[]
+  createdAt      DateTime          @default(now())
+}
+
+model RutinaEjercicio {
+  rutinaId        String
+  ejercicioId     String
+  series          Int
+  repeticiones    Int
+  descansoSegundos Int?
+  rutina          Rutina    @relation(fields: [rutinaId], references: [id], onDelete: Cascade)
+  ejercicio       Ejercicio @relation(fields: [ejercicioId], references: [id], onDelete: Cascade)
+
+  @@id([rutinaId, ejercicioId])
+}
+
+model Asistencia {
+  id          String   @id @default(uuid())
+  estudianteId String
+  estudiante  Usuario  @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
+  fecha       DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  @@index([estudianteId, fecha])
+}
