@@ -13,12 +13,12 @@ Determina el alcance leyendo el resumen de cambios del implementador (y `git sta
 
 | Alcance                                  | Comandos                                                                 |
 | ---------------------------------------- | ------------------------------------------------------------------------ |
-| `packages/shared` o varias apps          | `pnpm build` (raíz, compila shared y las tres apps)                       |
-| Solo `apps/api`                          | `pnpm --filter api build` + `pnpm --filter api test`                      |
-| Solo `apps/admin`                        | `pnpm --filter admin build`                                               |
-| Solo `apps/web`                          | `pnpm --filter web build` + `pnpm --filter web exec astro check`          |
+| `packages/shared` o varias apps          | `npm run build` (raíz, compila shared y las tres apps)                    |
+| Solo `apps/api`                          | `npm run build --workspace=api` + `npm run test --workspace=api`          |
+| Solo `apps/admin`                        | `npm run build --workspace=admin`                                         |
+| Solo `apps/web`                          | `npm run build --workspace=web` + `npm run astro --workspace=web -- check` |
 
-Agrega `pnpm --filter @gimnasio/shared build` si hubo cambios en shared (o deja que lo haga el `build` de la app). Si el cambio afecta el modelo de datos, avisá que falta `pnpm setup:db` (no lo corras contra la BD real si puede romper datos; repórtalo).
+Agrega `npm run build --workspace=@gimnasio/shared` si hubo cambios en shared (o deja que lo haga el `build` de la app). Si el cambio afecta el modelo de datos, avisá que falta `npm run setup:db` (no lo corras contra la BD real si puede romper datos; repórtalo).
 
 ## Cómo reportar
 

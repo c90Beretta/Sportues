@@ -6,12 +6,12 @@ on:
     paths:
       - "apps/web/**"
       - "packages/shared/**"
-      - "pnpm-lock.yaml"
+      - "package-lock.json"
   pull_request:
     paths:
       - "apps/web/**"
       - "packages/shared/**"
-      - "pnpm-lock.yaml"
+      - "package-lock.json"
 
 jobs:
   build:
@@ -20,19 +20,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
 
       - name: Install
-        run: pnpm install
+        run: npm install
 
       - name: Build Astro
-        run: pnpm --filter web build
+        run: npm run build --workspace=web

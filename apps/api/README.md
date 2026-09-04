@@ -29,10 +29,10 @@ prisma/
 ## Como empezar
 
 ```bash
-pnpm install                        # desde la raiz del repositorio
-pnpm --filter api prisma:generate   # genera el cliente de Prisma
-pnpm --filter api prisma:push       # sincroniza el schema con la BD (solo desarrollo)
-pnpm --filter api start:dev         # servidor en http://localhost:3000
+npm install                           # desde la raiz del repositorio
+npm run prisma:generate --workspace=api # genera el cliente de Prisma
+npm run prisma:push --workspace=api    # sincroniza el schema con la BD (solo desarrollo)
+npm run start:dev --workspace=api      # servidor en http://localhost:3000
 ```
 
 La conexion usa `DATABASE_URL` de `.env` (postgres del servicio `db` del devcontainer).
@@ -56,5 +56,5 @@ La conexion usa `DATABASE_URL` de `.env` (postgres del servicio `db` del devcont
 ## Tests
 
 ```bash
-pnpm --filter api test
+npm run test --workspace=api
 ```

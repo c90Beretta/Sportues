@@ -5,8 +5,8 @@ Panel administrativo (staff) del gimnasio. Es el lugar donde **se replica la est
 ## Comandos
 
 ```fish
-pnpm --filter admin dev        # http://localhost:3001
-pnpm --filter admin build      # next build (incluye typecheck)
+npm run dev --workspace=admin        # http://localhost:3001
+npm run build --workspace=admin      # next build (incluye typecheck)
 ```
 
 ## Stack

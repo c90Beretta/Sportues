@@ -2,7 +2,7 @@
 
 ## Vista general
 
-Repositorio único (workspace de pnpm) con tres aplicaciones y un paquete de código compartido.
+Repositorio único (workspace de npm) con tres aplicaciones y un paquete de código compartido.
 
 ```
 ┌──────────────────────────────────────────────────┐
@@ -21,11 +21,11 @@ apps/api            apps/admin            apps/web
 
 ## Decisiones principales
 
-- **Workspace único**: `pnpm-workspace.yaml` cubre `apps/*` y `packages/*`. pnpm resuelve dependencias desde la raíz, por eso el devcontainer es único y no uno por app.
+- **Workspace único**: `package.json` cubre `apps/*` y `packages/*`. npm resuelve dependencias desde la raíz, por eso el devcontainer es único y no uno por app.
 - **`@gimnasio/shared`**: tipos de dominio (`Usuario`, `Membresia`, `Rutina`, `Ejercicio`, `Asistencia`) y esquemas de validación con `zod`. Es la única fuente de verdad de tipos; las apps no duplican tipos.
 - **Autenticación independiente**: la API firma JWT. `apps/admin` guarda el token en la cookie `admin_session` y `apps/web` en la cookie `web_session`. No se comparten cookies ni tokens entre ambas.
 - **Validación**: la API valida con `class-validator`; `zod` se usa en el paquete compartido y para validación en los clientes (admin y web).
-- **Sin herramientas pesadas**: no hay Turborepo, Nx ni Lerna. Solo workspaces de pnpm + scripts.
+- **Sin herramientas pesadas**: no hay Turborepo, Nx ni Lerna. Solo workspaces de npm + scripts.
 
 ## Flujo de datos
 
@@ -37,6 +37,6 @@ apps/api            apps/admin            apps/web
 
 Tres workflows (`api.yml`, `admin.yml`, `web.yml`) con *path filters*: solo corren cuando cambian archivos de `apps/<app>` o de `packages/shared`. Cada uno compila su app:
 
-- `api.yml` → `pnpm --filter api build` + `pnpm --filter api test`
-- `admin.yml` → `pnpm --filter admin build`
-- `web.yml` → `pnpm --filter web build`
+- `api.yml` → `npm run build --workspace=api` + `npm run test --workspace=api`
+- `admin.yml` → `npm run build --workspace=admin`
+- `web.yml` → `npm run build --workspace=web`

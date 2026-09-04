@@ -6,6 +6,7 @@ services:
     command: sleep infinity
     volumes:
       - ..:/workspace
+      - npm-cache:/root/.npm
     environment:
       DATABASE_URL: postgresql://usuario:password@db:5432/gimnasio
       JWT_SECRET: dev-secret-cambiar-en-produccion
@@ -32,3 +33,4 @@ services:
 
 volumes:
   pgdata:
+  npm-cache:

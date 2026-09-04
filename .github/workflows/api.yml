@@ -6,12 +6,12 @@ on:
     paths:
       - "apps/api/**"
       - "packages/shared/**"
-      - "pnpm-lock.yaml"
+      - "package-lock.json"
   pull_request:
     paths:
       - "apps/api/**"
       - "packages/shared/**"
-      - "pnpm-lock.yaml"
+      - "package-lock.json"
 
 jobs:
   build-test:
@@ -20,24 +20,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
 
       - name: Install
-        run: pnpm install
+        run: npm install
 
       - name: Build
-        run: pnpm --filter api build
+        run: npm run build --workspace=api
 
       - name: Test
-        run: pnpm --filter api test
+        run: npm run test --workspace=api
         env:
           DATABASE_URL: postgresql://usuario:password@localhost:5432/gimnasio

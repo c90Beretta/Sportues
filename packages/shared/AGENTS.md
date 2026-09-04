@@ -5,7 +5,7 @@ Paquete de TypeScript puro con los **tipos de dominio** y **esquemas de validaci
 ## Comandos
 
 ```fish
-pnpm --filter @gimnasio/shared build   # compila dist/ (CJS) + dist-esm/ (ESM)
+npm run build --workspace=@gimnasio/shared   # compila dist/ (CJS) + dist-esm/ (ESM)
 ```
 
 ## Estructura
@@ -32,7 +32,7 @@ src/
 ## Flujo al cambiar shared
 
 1. Editar tipos/schemas en `src/`.
-2. `pnpm --filter @gimnasio/shared build`.
-3. Recompilar las apps consumidoras (`pnpm --filter api build`, `pnpm --filter admin build`, `pnpm --filter web build`).
+2. `npm run build --workspace=@gimnasio/shared`.
+3. Recompilar las apps consumidoras (`npm run build --workspace=api`, `npm run build --workspace=admin`, `npm run build --workspace=web`).
 
 El CI (`api.yml`, `admin.yml`, `web.yml`) corre cuando cambian archivos de esta carpeta — no romper esos gates.

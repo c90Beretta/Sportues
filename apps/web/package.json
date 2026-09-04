@@ -14,7 +14,7 @@
     "@astrojs/node": "^9.0.0",
     "@astrojs/react": "^4.0.0",
     "@astrojs/tailwind": "^6.0.0",
-    "@gimnasio/shared": "workspace:*",
+    "@gimnasio/shared": "0.1.0",
     "astro": "^5.1.0",
     "jose": "^5.9.6",
     "react": "^19.0.0",

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Guía para Claude Code trabajando en el proyecto universitario de **gestión de gimnasio** (`Sportues`). Monorepo de pnpm con tres apps y un paquete compartido, todo dentro de un devcontainer. Lee esto completo antes de tocar código.
+Guía para Claude Code trabajando en el proyecto universitario de **gestión de gimnasio** (`Sportues`). Monorepo de npm con tres apps y un paquete compartido, todo dentro de un devcontainer. Lee esto completo antes de tocar código.
 
 > Nota: el contenido de negocio es el mismo que `AGENTS.md` (usado por otras IAs). Si hay divergencia manda este archivo.
 
@@ -12,31 +12,31 @@ Guía para Claude Code trabajando en el proyecto universitario de **gestión de 
 | `apps/admin`         | Panel de **staff**: **Next.js** (App Router, Server Components) |
 | `apps/web`           | App de **estudiantes**: **Astro** (SSR, node) + Tailwind + **islas React** |
 | `packages/shared`    | Tipos de dominio y esquemas `zod` compartidos (`@gimnasio/shared`) |
-| `.devcontainer`      | Devcontainer único: `workspace` (Node 20 + pnpm) + `db` (postgres:16) |
+| `.devcontainer`      | Devcontainer único: `workspace` (Node 20 + npm) + `db` (postgres:16) |
 | `.github/workflows`  | CI por app con path filters                                    |
 
-Devcontainer único a propósito: pnpm resuelve dependencias desde la raíz del monorepo.
+Devcontainer único a propósito: npm resuelve dependencias desde la raíz del monorepo.
 
 ## Comandos
 
 ```sh
-pnpm install                       # instala todo el monorepo (desde la raíz)
-pnpm dev                           # compila shared y levanta api + admin + web en paralelo
-pnpm build                         # compila shared y las tres apps
-pnpm setup:db                      # prisma db push (sincroniza schema con PostgreSQL)
-pnpm prisma:studio                 # explorador visual de la BD
+npm install                        # instala todo el monorepo (desde la raíz)
+npm run dev                        # compila shared y levanta api + admin + web en paralelo
+npm run build                      # compila shared y las tres apps
+npm run setup:db                   # prisma db push (sincroniza schema con PostgreSQL)
+npm run prisma:studio              # explorador visual de la BD
 
-pnpm --filter api start:dev        # api dev en http://localhost:3000
-pnpm --filter api build            # prisma generate + nest build
-pnpm --filter api test             # jest
-pnpm --filter admin dev            # admin dev en http://localhost:3001
-pnpm --filter admin build          # next build (incluye typecheck)
-pnpm --filter web dev              # web dev en http://localhost:4321
-pnpm --filter web build            # astro build
-pnpm --filter web exec astro check # typecheck de types de web
+npm run start:dev --workspace=api   # api dev en http://localhost:3000
+npm run build --workspace=api       # prisma generate + nest build
+npm run test --workspace=api        # jest
+npm run dev --workspace=admin       # admin dev en http://localhost:3001
+npm run build --workspace=admin     # next build (incluye typecheck)
+npm run dev --workspace=web         # web dev en http://localhost:4321
+npm run build --workspace=web       # astro build
+npm run astro --workspace=web -- check # typecheck de types de web
 ```
 
-Antes de terminar cualquier cambio frontend, corré `pnpm --filter <app> build` (o `astro check`). En la API, añadí specs por cada service nuevo y hacé pasar `pnpm --filter api test`.
+Antes de terminar cualquier cambio frontend, corré `npm run build --workspace=<app>` (o `npm run astro --workspace=web -- check`). En la API, añadí specs por cada service nuevo y hacé pasar `npm run test --workspace=api`.
 
 ## Idiomas y estilo
 
@@ -49,7 +49,7 @@ Antes de terminar cualquier cambio frontend, corré `pnpm --filter <app> build` 
 
 **No modificar sin preguntar al usuario** (`AskUserQuestion`):
 
-- `package.json`, `pnpm-workspace.yaml`, `pnpm-lock.yaml`
+- `package.json`, `package-lock.json`
 - `.devcontainer/`, `.github/workflows/`
 - `AGENTS.md`, `CLAUDE.md`, `.claude/`
 - `tsconfig*.json`, `astro.config.mjs`, `next.config.mjs`, `prisma/schema.prisma`
@@ -134,9 +134,9 @@ apps/admin/app/<entidad>/
 ## Entorno / despliegue
 
 - BD: servicio `db` del devcontainer (`DATABASE_URL=postgresql://usuario:password@db:5432/gimnasio` en `apps/api/.env`).
-- `@gimnasio/shared`: build dual (CJS `dist/` + ESM `dist-esm/`). Al cambiar tipos/schemas: `pnpm --filter @gimnasio/shared build` y luego el build de las apps.
+- `@gimnasio/shared`: build dual (CJS `dist/` + ESM `dist-esm/`). Al cambiar tipos/schemas: `npm run build --workspace=@gimnasio/shared` y luego el build de las apps.
 - CI: `api.yml`, `admin.yml`, `web.yml` con path filters sobre `apps/<app>` y `packages/shared`.
 
 ## Flujo de agentes
 
-Este repo define agentes en `.claude/agents/` (`orquestador`, `implementador`, `tester`, `reviewer`). El `orquestador` coordina: mejora el prompt, delega al `implementador`, verifica con `tester` (`pnpm build` / `pnpm --filter api test`), juzga con `reviewer` e itera. Úsalo proactivamente; preguntá al usuario antes de tocar configuración.
+Este repo define agentes en `.claude/agents/` (`orquestador`, `implementador`, `tester`, `reviewer`). El `orquestador` coordina: mejora el prompt, delega al `implementador`, verifica con `tester` (`npm run build` / `npm run test --workspace=api`), juzga con `reviewer` e itera. Úsalo proactivamente; preguntá al usuario antes de tocar configuración.

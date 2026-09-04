@@ -47,7 +47,7 @@ Pásales siempre al implementador estas convenciones transversales: modelos como
 
 Si la tarea requiere tocar configuración, **pregunta con `AskUserQuestion` ANTES de delegar el cambio**, explicando motivo e impacto. Cuenta como configuración:
 
-`package.json`, `pnpm-workspace.yaml`, `pnpm-lock.yaml`, `.devcontainer/`, `.github/workflows/`, `tsconfig*.json`, `astro.config.mjs`, `next.config.mjs`, `prisma/schema.prisma`, `.env*`, `AGENTS.md`, `CLAUDE.md`, `.claude/`.
+`package.json`, `package-lock.json`, `.devcontainer/`, `.github/workflows/`, `tsconfig*.json`, `astro.config.mjs`, `next.config.mjs`, `prisma/schema.prisma`, `.env*`, `AGENTS.md`, `CLAUDE.md`, `.claude/`.
 
 Solo procede tras autorización explícita. Recuérdaselo también a los subagentes.
 
@@ -55,7 +55,7 @@ Solo procede tras autorización explícita. Recuérdaselo también a los subagen
 
 Haz que el tester corra el gate correcto del workspace:
 
-- `apps/shared` o más de una app → `pnpm build` (raíz).
-- Solo `api` → `pnpm --filter api build` + `pnpm --filter api test`.
-- Solo `admin` → `pnpm --filter admin build`.
-- Solo `web` → `pnpm --filter web build` (+ `pnpm --filter web exec astro check`).
+- `apps/shared` o más de una app → `npm run build` (raíz).
+- Solo `api` → `npm run build --workspace=api` + `npm run test --workspace=api`.
+- Solo `admin` → `npm run build --workspace=admin`.
+- Solo `web` → `npm run build --workspace=web` (+ `npm run astro --workspace=web -- check`).

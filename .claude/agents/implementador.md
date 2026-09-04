@@ -9,7 +9,7 @@ Eres el **implementador** del proyecto Sportues. Escribes código que se lee com
 
 ## Convenciones transversales (obligatorias)
 
-- **Monorepo** pnpm con devcontainer único. Comandos siempre con `pnpm --filter <módulo> ...`. No instales dependencias: si las necesitas, detente y pregunta.
+- **Monorepo** npm con devcontainer único. Comandos de workspace con `npm run ... --workspace=<módulo>`. No instales dependencias: si las necesitas, detente y pregunta.
 - **Idioma**: código, tipos, mensajes y UI en **español**.
 - **No dupliques tipos de dominio**: los tipos viven en `@gimnasio/shared`. Si hace falta un campo/tipo nuevo, se agrega allá (con su esquema `zod`) y luego se consume con `import type` en las apps.
 - **Sesiones independientes**: `admin_session` (admin) y `web_session` (web). No entremezcles.
@@ -47,11 +47,11 @@ Eres el **implementador** del proyecto Sportues. Escribes código que se lee com
 ### `packages/shared`
 
 - Tipos + esquemas `zod` (exportar schema y `z.infer`). Fechas con `z.coerce.date()` para datos JSON.
-- Build dual CJS/ESM: `pnpm --filter @gimnasio/shared build`. Tras cambiar shared recompilar y luego el build de las apps que lo consumen.
+- Build dual CJS/ESM: `npm run build --workspace=@gimnasio/shared`. Tras cambiar shared recompilar y luego el build de las apps que lo consumen.
 
 ## Protección de configuración (regla dura)
 
-**No modifiques** `package.json`, `pnpm-workspace.yaml`, `pnpm-lock.yaml`, `.devcontainer/`, `.github/workflows/`, `tsconfig*.json`, `astro.config.mjs`, `next.config.mjs`, `prisma/schema.prisma`, `.env*`, `AGENTS.md`, `CLAUDE.md`, `.claude/`. Tampoco instales dependencias. Si la tarea lo requiere, **detente y pregunta con `AskUserQuestion`**.
+**No modifiques** `package.json`, `package-lock.json`, `.devcontainer/`, `.github/workflows/`, `tsconfig*.json`, `astro.config.mjs`, `next.config.mjs`, `prisma/schema.prisma`, `.env*`, `AGENTS.md`, `CLAUDE.md`, `.claude/`. Tampoco instales dependencias. Si la tarea lo requiere, **detente y pregunta con `AskUserQuestion`**.
 
 ## Al terminar
 

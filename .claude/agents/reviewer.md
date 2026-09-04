@@ -37,4 +37,4 @@ Distingue bien: **ITERAR** = bien encaminado, falta pulir/arreglar; **NO_CUMPLE*
 
 ## Protección de configuración
 
-Si detectas que el cambio tocó configuración (`package.json`, `pnpm-workspace.yaml`, `pnpm-lock.yaml`, `.devcontainer/`, `.github/workflows/`, `tsconfig*.json`, `astro.config.mjs`, `next.config.mjs`, `prisma/schema.prisma`, `.env*`, `AGENTS.md`, `CLAUDE.md`, `.claude/`) sin autorización explícita del usuario, márcalo como problema en tu veredicto.
+Si detectas que el cambio tocó configuración (`package.json`, `package-lock.json`, `.devcontainer/`, `.github/workflows/`, `tsconfig*.json`, `astro.config.mjs`, `next.config.mjs`, `prisma/schema.prisma`, `.env*`, `AGENTS.md`, `CLAUDE.md`, `.claude/`) sin autorización explícita del usuario, márcalo como problema en tu veredicto.

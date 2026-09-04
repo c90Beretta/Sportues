@@ -1,6 +1,6 @@
 # Proyecto universitario de gestión de gimnasio
 
-Repositorio único (workspace de pnpm) con tres aplicaciones y un paquete compartido, todo dentro de un devcontainer.
+Repositorio único (workspace de npm) con tres aplicaciones y un paquete compartido, todo dentro de un devcontainer.
 
 | Carpeta              | Descripción                                                            |
 | -------------------- | ---------------------------------------------------------------------- |
@@ -20,20 +20,20 @@ Repositorio único (workspace de pnpm) con tres aplicaciones y un paquete compar
 
 1. Cloná el repositorio y abrí la carpeta raíz en VS Code.
 2. Comando: **Dev Containers: Reopen in Container**.
-3. Al crearse, el contenedor instala dependencias (`pnpm install`), genera el cliente de Prisma y copia `apps/api/.env.example` a `apps/api/.env`.
+3. Al crearse, el contenedor instala dependencias (`npm install`), genera el cliente de Prisma y copia `apps/api/.env.example` a `apps/api/.env`.
 
 En el devcontainer:
 
 ```bash
-pnpm setup:db        # sincroniza el schema de Prisma con PostgreSQL
-pnpm dev             # levanta las tres apps en paralelo
-pnpm prisma:studio   # (opcional) explorar la base de datos
+npm run setup:db        # sincroniza el schema de Prisma con PostgreSQL
+npm run dev             # levanta las tres apps en paralelo
+npm run prisma:studio   # (opcional) explorar la base de datos
 ```
 
 Si querés un usuario de prueba:
 
 ```bash
-pnpm --filter api run start --no-watch  # no es necesario en dev
+npm run start --workspace=api -- --no-watch  # no es necesario en dev
 # Crea un staff/estudiante tocando la API (ver apps/api/README.md)
 ```
 
@@ -41,17 +41,17 @@ pnpm --filter api run start --no-watch  # no es necesario en dev
 
 | App     | URL                 | Comando             |
 | ------- | ------------------- | ------------------- |
-| API     | http://localhost:3000 | `pnpm --filter api start:dev` |
-| Admin   | http://localhost:3001 | `pnpm --filter admin dev` |
-| Web     | http://localhost:4321 | `pnpm --filter web dev` |
+| API     | http://localhost:3000 | `npm run start:dev --workspace=api` |
+| Admin   | http://localhost:3001 | `npm run dev --workspace=admin` |
+| Web     | http://localhost:4321 | `npm run dev --workspace=web` |
 
 Para correr todo junto:
 
 ```bash
-pnpm dev
+npm run dev
 ```
 
-> `pnpm dev` primero compila `@gimnasio/shared` (una vez) y luego arranca las tres apps en paralelo con sus modos de watch.
+> `npm run dev` primero compila `@gimnasio/shared` (una vez) y luego arranca las tres apps en paralelo con sus modos de watch.
 
 ## Variables de entorno
 

@@ -5,9 +5,9 @@ App pública de estudiantes del gimnasio. Es donde **se replican las convencione
 ## Comandos
 
 ```fish
-pnpm --filter web dev             # http://localhost:4321
-pnpm --filter web build           # astro build (SSR node, standalone)
-pnpm --filter web exec astro check   # typecheck de types
+npm run dev --workspace=web             # http://localhost:4321
+npm run build --workspace=web           # astro build (SSR node, standalone)
+npm run astro --workspace=web -- check   # typecheck de types
 ```
 
 ## Stack

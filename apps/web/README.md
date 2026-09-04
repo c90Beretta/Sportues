@@ -29,8 +29,8 @@ App pública para estudiantes del gimnasio, con renderizado en servidor (SSR) y 
 ## Como empezar
 
 ```bash
-pnpm install                    # desde la raiz del repositorio
-pnpm --filter web dev           # http://localhost:4321
+npm install                     # desde la raiz del repositorio
+npm run dev --workspace=web     # http://localhost:4321
 ```
 
 Requiere `apps/api` corriendo (http://localhost:3000) y la configuración en `.env`:
@@ -46,5 +46,5 @@ PORT=4321
 ## Build
 
 ```bash
-pnpm --filter web build
+npm run build --workspace=web
 ```

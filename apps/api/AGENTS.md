@@ -5,11 +5,11 @@ API REST del gimnasio. La fuente de verdad global es `AGENTS.md` (raíz); aquí 
 ## Comandos
 
 ```fish
-pnpm --filter api start:dev       # dev con watch en http://localhost:3000
-pnpm --filter api build           # prisma generate + nest build
-pnpm --filter api test            # jest
-pnpm --filter api prisma:generate
-pnpm --filter api prisma:push     # sincroniza schema con la BD (sin migraciones)
+npm run start:dev --workspace=api       # dev con watch en http://localhost:3000
+npm run build --workspace=api           # prisma generate + nest build
+npm run test --workspace=api            # jest
+npm run prisma:generate --workspace=api
+npm run prisma:push --workspace=api     # sincroniza schema con la BD (sin migraciones)
 ```
 
 ## Estructura obligatoria
@@ -43,7 +43,7 @@ No usar una estructura plana de controllers/services sueltos: **siempre un módu
 ## Tests
 
 - Un spec por service (`*.spec.ts`) mockeando `PrismaService`. Ejemplo real: `src/modules/ejercicios/ejercicios.service.spec.ts`.
-- Correr `pnpm --filter api test`.
+- Correr `npm run test --workspace=api`.
 
 ## Endpoints actuales
 

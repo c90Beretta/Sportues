@@ -21,8 +21,8 @@ Panel administrativo del gimnasio para el personal (**STAFF**).
 ## Como empezar
 
 ```bash
-pnpm install                    # desde la raiz del repositorio
-pnpm --filter admin dev         # http://localhost:3001
+npm install                     # desde la raiz del repositorio
+npm run dev --workspace=admin   # http://localhost:3001
 ```
 
 Requiere que `apps/api` esté corriendo (http://localhost:3000) y la configuración en `.env`:
@@ -37,5 +37,5 @@ JWT_SECRET=dev-secret-cambiar-en-produccion
 ## Build
 
 ```bash
-pnpm --filter admin build
+npm run build --workspace=admin
 ```

@@ -19,5 +19,5 @@ Se compila a `dist/` (CommonJS). Los consumidores (NestJS, Next.js, Astro) resue
 ## Build
 
 ```bash
-pnpm --filter @gimnasio/shared build
+npm run build --workspace=@gimnasio/shared
 ```

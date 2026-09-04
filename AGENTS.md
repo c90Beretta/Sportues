@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Proyecto universitario de **gestión de gimnasio** (repo `Sportues`). Monorepo de pnpm con tres apps y un paquete compartido, todo dentro de un devcontainer.
+Proyecto universitario de **gestión de gimnasio** (repo `Sportues`). Monorepo de npm con tres apps y un paquete compartido, todo dentro de un devcontainer.
 
 Este archivo es la fuente de verdad para que cualquier IA (opencode, Claude Code, Cursor, etc.) trabaje en el proyecto. Léelo completo antes de tocar código.
 
@@ -12,42 +12,42 @@ Este archivo es la fuente de verdad para que cualquier IA (opencode, Claude Code
 | `apps/admin`         | Panel de **staff**: **Next.js** (App Router, Server Components) |
 | `apps/web`           | App de **estudiantes**: **Astro** (SSR, node) + Tailwind + **islas React** |
 | `packages/shared`    | Tipos de dominio y esquemas `zod` compartidos (`@gimnasio/shared`) |
-| `.devcontainer`      | Devcontainer único: `workspace` (Node 20 + pnpm) + `db` (postgres:16) |
+| `.devcontainer`      | Devcontainer único: `workspace` (Node 20 + npm) + `db` (postgres:16) |
 | `.github/workflows`  | CI por app con path filters                                    |
 
-**Por qué un solo devcontainer**: pnpm resuelve dependencias desde la raíz del monorepo; un devcontainer por app rompería la resolución de `packages/shared`.
+**Por qué un solo devcontainer**: npm resuelve dependencias desde la raíz del monorepo; un devcontainer por app rompería la resolución de `packages/shared`.
 
 ## Comandos
 
 ```fish
-pnpm install                 # instala todo el monorepo (desde la raíz)
-pnpm dev                     # compila shared y levanta api + admin + web en paralelo
-pnpm build                   # compila shared y las tres apps
-pnpm setup:db                # prisma db push (sincroniza schema con PostgreSQL)
-pnpm prisma:studio           # explorador visual de la BD
+npm install                  # instala todo el monorepo (desde la raíz)
+npm run dev                  # compila shared y levanta api + admin + web en paralelo
+npm run build                # compila shared y las tres apps
+npm run setup:db             # prisma db push (sincroniza schema con PostgreSQL)
+npm run prisma:studio        # explorador visual de la BD
 ```
 
-Por app (usa `pnpm --filter <nombre> ...`):
+Por app (usa `npm run ... --workspace=<nombre>`):
 
 ```fish
 # api (NestJS + Prisma)
-pnpm --filter api start:dev      # dev con watch en http://localhost:3000
-pnpm --filter api build          # prisma generate + nest build
-pnpm --filter api test           # jest
-pnpm --filter api prisma:generate
-pnpm --filter api prisma:push
+npm run start:dev --workspace=api    # dev con watch en http://localhost:3000
+npm run build --workspace=api        # prisma generate + nest build
+npm run test --workspace=api         # jest
+npm run prisma:generate --workspace=api
+npm run prisma:push --workspace=api
 
 # admin (Next.js)
-pnpm --filter admin dev          # dev en http://localhost:3001
-pnpm --filter admin build        # next build (incluye typecheck)
+npm run dev --workspace=admin        # dev en http://localhost:3001
+npm run build --workspace=admin      # next build (incluye typecheck)
 
 # web (Astro)
-pnpm --filter web dev            # dev en http://localhost:4321
-pnpm --filter web build          # astro build
-pnpm --filter web exec astro check   # typecheck de types
+npm run dev --workspace=web          # dev en http://localhost:4321
+npm run build --workspace=web        # astro build
+npm run astro --workspace=web -- check # typecheck de types
 ```
 
-Verificación rápida de un cambio frontend: correr `pnpm --filter <app> build` (o el check equivalente) antes de terminar. La API tiene tests con jest (`pnpm --filter api test`); añade specs por cada service nuevo.
+Verificación rápida de un cambio frontend: correr `npm run build --workspace=<app>` (o el check equivalente) antes de terminar. La API tiene tests con jest (`npm run test --workspace=api`); añade specs por cada service nuevo.
 
 ## Idiomas y estilo
 
@@ -61,7 +61,7 @@ Verificación rápida de un cambio frontend: correr `pnpm --filter <app> build` 
 
 **No modifique** sin preguntar al usuario (vía `AskUserQuestion`/pregunta explícita):
 
-- `package.json`, `pnpm-workspace.yaml`, `pnpm-lock.yaml`
+- `package.json`, `package-lock.json`
 - `.devcontainer/`, `.github/workflows/`
 - `AGENTS.md`, `CLAUDE.md`, `.claude/`
 - `tsconfig*.json`, `astro.config.mjs`, `next.config.mjs`, `prisma/schema.prisma`
@@ -178,5 +178,5 @@ apps/admin/app/<entidad>/
 ## Notas de despliegue / entorno
 
 - Base de datos: servicio `db` del devcontainer (`DATABASE_URL=postgresql://usuario:password@db:5432/gimnasio` en `apps/api/.env`).
-- `packages/shared`: build dual (CJS `dist/` + ESM `dist-esm/`). Si cambiás tipos/schemas, corré `pnpm --filter @gimnasio/shared build` y luego el build de las apps.
+- `packages/shared`: build dual (CJS `dist/` + ESM `dist-esm/`). Si cambiás tipos/schemas, corré `npm run build --workspace=@gimnasio/shared` y luego el build de las apps.
 - CI: cada workflow (`api.yml`, `admin.yml`, `web.yml`) corre solo con cambios en su app o en `packages/shared`. No romper esos gates.

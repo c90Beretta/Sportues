@@ -20,7 +20,6 @@ apps/api/prisma/migrations/dev.db*
 # Logs
 *.log
 npm-debug.log*
-pnpm-debug.log*
 
 # Sistema
 .DS_Store

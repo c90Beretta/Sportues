@@ -2,12 +2,15 @@
   "name": "gimnasio",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@11.21.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "description": "Proyecto universitario de gestion de gimnasio: API (NestJS), panel de administracion (Next.js) y app publica de estudiantes (Astro).",
   "scripts": {
-    "dev": "pnpm --filter @gimnasio/shared build && pnpm -r --parallel dev",
-    "build": "pnpm -r build",
-    "setup:db": "pnpm --filter api prisma:push",
-    "prisma:studio": "pnpm --filter api prisma:studio"
+    "dev": "npm run build --workspace=@gimnasio/shared && (npm run dev --workspace=api & npm run dev --workspace=admin & npm run dev --workspace=web & wait)",
+    "build": "npm run build --workspace=@gimnasio/shared && npm run build --workspace=api && npm run build --workspace=admin && npm run build --workspace=web",
+    "setup:db": "npm run prisma:push --workspace=api",
+    "prisma:studio": "npm run prisma:studio --workspace=api"
   }
 }

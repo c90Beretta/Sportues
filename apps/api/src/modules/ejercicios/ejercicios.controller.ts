@@ -10,7 +10,10 @@ import {
   Post,
 } from "@nestjs/common";
 import type { Ejercicio } from "@gimnasio/shared";
-import { ROL_ESTUDIANTE, ROL_STAFF } from "../auth/interfaces/usuario-auth.interface";
+import {
+  ROL_ESTUDIANTE,
+  ROL_STAFF,
+} from "../auth/interfaces/usuario-auth.interface";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { ActualizarEjercicioDto } from "./dto/actualizar-ejercicio.dto";
 import { CrearEjercicioDto } from "./dto/crear-ejercicio.dto";
@@ -34,7 +37,10 @@ export class EjerciciosController {
 
   @Roles(ROL_STAFF)
   @Patch(":id")
-  actualizar(@Param("id") id: string, @Body() dto: ActualizarEjercicioDto): Promise<Ejercicio> {
+  actualizar(
+    @Param("id") id: string,
+    @Body() dto: ActualizarEjercicioDto,
+  ): Promise<Ejercicio> {
     return this.ejerciciosService.actualizar(id, dto);
   }
 
