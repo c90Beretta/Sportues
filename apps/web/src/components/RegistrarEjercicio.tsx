@@ -12,17 +12,17 @@ export default function RegistrarEjercicio({ ejercicioId, ejercicioNombre }: Pro
   const [estado, setEstado] = useState<Estado>("inactivo");
 
   return (
-    <div className="flex flex-col items-end gap-1">
+    <div>
       <button
         type="button"
         onClick={() => setEstado("ok")}
         disabled={estado === "ok"}
-        className="border border-slate-300 hover:bg-slate-100 disabled:border-emerald-400 disabled:text-emerald-700 rounded py-1.5 px-3 text-sm"
+        className="secondary-button"
       >
         {estado === "ok" ? "✓ Completado" : "Marcar completado"}
       </button>
       {estado === "ok" && (
-        <span className="text-emerald-700 text-xs">¡Buen trabajo con {ejercicioNombre}!</span>
+        <span className="form-success completion-message">¡Buen trabajo con {ejercicioNombre}!</span>
       )}
     </div>
   );

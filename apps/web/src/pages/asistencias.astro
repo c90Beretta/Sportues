@@ -20,29 +20,41 @@ try {
 ---
 
 <Layout title="Historial de asistencia · Gimnasio" sesion={sesion}>
-  <h1 class="text-2xl font-bold mb-4">Historial de asistencia</h1>
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">Tu actividad</p>
+      <h1>Historial de asistencia</h1>
+      <p>Consulta las visitas que has registrado en el gimnasio.</p>
+    </div>
+    <span class="status-pill">{asistencias.length} visitas</span>
+  </header>
 
   {
     error ? (
-      <p class="text-red-600 text-sm">{error}</p>
+      <p class="ues-card error-state">{error}</p>
     ) : asistencias.length === 0 ? (
-      <div class="bg-white rounded-lg shadow p-6">
-        <p class="text-slate-600">Todavía no tenés asistencias registradas.</p>
+      <div class="ues-card empty-state">
+        <strong>Aún no hay visitas registradas</strong>
+        <p>Tu historial aparecerá aquí después de realizar tu primer check-in.</p>
       </div>
     ) : (
-      <div class="bg-white rounded-lg shadow overflow-hidden">
-        <table class="w-full text-sm">
+      <div class="ues-card table-card">
+        <div class="table-card-header">
+          <strong>Visitas recientes</strong>
+          <span>Registro personal de accesos</span>
+        </div>
+        <table class="responsive-table">
           <thead>
-            <tr class="bg-slate-50 text-left">
-              <th class="px-4 py-2 font-semibold">Fecha</th>
-              <th class="px-4 py-2 font-semibold">Registrada</th>
+            <tr>
+              <th>Fecha de visita</th>
+              <th>Hora de registro</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-100">
+          <tbody>
             {
               asistencias.map((a) => (
                 <tr>
-                  <td class="px-4 py-2">
+                  <td data-label="Fecha de visita">
                     {new Date(a.fecha).toLocaleDateString("es", {
                       weekday: "long",
                       year: "numeric",
@@ -50,7 +62,7 @@ try {
                       day: "numeric",
                     })}
                   </td>
-                  <td class="px-4 py-2 text-slate-500">
+                  <td data-label="Hora de registro">
                     {new Date(a.createdAt).toLocaleString("es")}
                   </td>
                 </tr>

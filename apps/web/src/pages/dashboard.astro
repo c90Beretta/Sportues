@@ -22,61 +22,91 @@ try {
 ---
 
 <Layout title="Mi rutina · Gimnasio" sesion={sesion}>
-  <h1 class="text-2xl font-bold mb-4">Mi rutina</h1>
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">Panel de entrenamiento</p>
+      <h1>Hola, listo para entrenar</h1>
+      <p>Revisa tu plan del día y registra tu visita al gimnasio.</p>
+    </div>
+    <span class="status-pill">Acceso disponible</span>
+  </header>
 
   {
     error ? (
-      <p class="text-red-600 text-sm">{error}</p>
-    ) : rutinas.length === 0 ? (
-      <div class="bg-white rounded-lg shadow p-6">
-        <p class="text-slate-600">
-          Todavía no tenés rutinas asignadas. Consultá con el personal del gimnasio.
-        </p>
-      </div>
+      <p class="ues-card error-state">{error}</p>
     ) : (
-      <div class="grid gap-4">
-        {rutinas.map((rutina) => (
-          <section key={rutina.id} class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-lg font-semibold">{rutina.nombre}</h2>
-            {rutina.descripcion && (
-              <p class="text-sm text-slate-500 mb-2">{rutina.descripcion}</p>
-            )}
-            <ul class="divide-y divide-slate-100">
-              {rutina.ejercicios.map((eje) => (
-                <li
-                  key={`${rutina.id}-${eje.ejercicioId}`}
-                  class="py-3 flex items-center justify-between gap-4"
-                >
-                  <div>
-                    <div class="font-medium">{eje.nombre ?? eje.ejercicioId}</div>
-                    <div class="text-sm text-slate-500">
-                      {eje.series} series × {eje.repeticiones} repeticiones
-                      {eje.descansoSegundos
-                        ? ` · ${eje.descansoSegundos}s de descanso`
-                        : ""}
-                    </div>
-                  </div>
-                  <RegistrarEjercicio
-                    client:load
-                    rutinaId={rutina.id}
-                    ejercicioId={eje.ejercicioId}
-                    ejercicioNombre={eje.nombre ?? eje.ejercicioId}
-                  />
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
-
-        <div class="bg-white rounded-lg shadow p-6 flex items-center justify-between gap-4">
-          <div>
-            <div class="font-semibold">Registrá tu asistencia de hoy</div>
-            <div class="text-sm text-slate-500">
-              Al visitar el gimnasio, hacé check-in para quedar registrado.
+      <div class="dashboard-grid">
+        <div class="content-stack">
+          <section class="ues-card access-summary">
+            <p class="eyebrow">Tu entrenamiento</p>
+            <h2>{rutinas.length > 0 ? "Todo listo para comenzar" : "Estamos preparando tu plan"}</h2>
+            <p>
+              {rutinas.length > 0
+                ? "Completa cada ejercicio a tu ritmo y marca tu avance durante la sesión."
+                : "Cuando el personal asigne una rutina, la encontrarás disponible aquí."}
+            </p>
+            <div class="summary-metrics">
+              <div>
+                <strong>{rutinas.length}</strong>
+                <span>{rutinas.length === 1 ? "rutina activa" : "rutinas activas"}</span>
+              </div>
+              <div>
+                <strong>{rutinas.reduce((total, rutina) => total + rutina.ejercicios.length, 0)}</strong>
+                <span>ejercicios asignados</span>
+              </div>
             </div>
-          </div>
-          <RegistrarAsistencia client:load />
+          </section>
+
+          {rutinas.length === 0 ? (
+            <div class="ues-card empty-state">
+              <strong>Aún no tienes una rutina asignada</strong>
+              <p>Consulta con el personal del gimnasio para comenzar tu plan.</p>
+            </div>
+          ) : (
+            rutinas.map((rutina) => (
+              <section key={rutina.id} class="ues-card section-card">
+                <div class="section-card-header">
+                  <div>
+                    <h2>{rutina.nombre}</h2>
+                    {rutina.descripcion && <p class="section-card-description">{rutina.descripcion}</p>}
+                  </div>
+                  <span class="status-pill">{rutina.ejercicios.length} ejercicios</span>
+                </div>
+                <ul class="routine-list">
+                  {rutina.ejercicios.map((eje, indice) => (
+                    <li key={`${rutina.id}-${eje.ejercicioId}`} class="routine-item">
+                      <span class="routine-index">{String(indice + 1).padStart(2, "0")}</span>
+                      <div class="routine-copy">
+                        <strong>{eje.nombre ?? eje.ejercicioId}</strong>
+                        <span>
+                          {eje.series} series × {eje.repeticiones} repeticiones
+                          {eje.descansoSegundos ? ` · ${eje.descansoSegundos}s de descanso` : ""}
+                        </span>
+                      </div>
+                      <RegistrarEjercicio
+                        client:load
+                        rutinaId={rutina.id}
+                        ejercicioId={eje.ejercicioId}
+                        ejercicioNombre={eje.nombre ?? eje.ejercicioId}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))
+          )}
         </div>
+
+        <aside class="ues-card checkin-card">
+          <span class="checkin-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M5 3h14v18H5zM9 3v4h6V3M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </span>
+          <h2>Registra tu visita</h2>
+          <p>Haz check-in cuando llegues para mantener actualizado tu historial de asistencia.</p>
+          <RegistrarAsistencia client:load />
+        </aside>
       </div>
     )
   }

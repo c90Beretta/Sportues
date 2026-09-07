@@ -35,38 +35,49 @@ export default function LoginForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-3">
-      <label className="flex flex-col gap-1 text-sm">
-        Email
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          autoComplete="email"
-          required
-          className="border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+    <form onSubmit={onSubmit} className="login-form">
+      <label className="form-field">
+        Correo institucional
+        <span className="input-shell">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 6h16v12H4zM4 7l8 6 8-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
+            placeholder="alumno@ues.mx"
+            required
+          />
+        </span>
       </label>
-      <label className="flex flex-col gap-1 text-sm">
+      <label className="form-field">
         Contraseña
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          autoComplete="current-password"
-          required
-          className="border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+        <span className="input-shell">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.8" />
+            <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+            placeholder="••••••••"
+            required
+          />
+        </span>
       </label>
 
-      {error && <p className="text-red-600 text-sm m-0">{error}</p>}
+      {error && <p className="form-error" role="alert">{error}</p>}
 
       <button
         type="submit"
         disabled={cargando}
-        className="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded py-2 px-4 text-sm disabled:opacity-60"
+        className="primary-button"
       >
-        {cargando ? "Ingresando…" : "Ingresar"}
+        {cargando ? "Ingresando…" : "Iniciar sesión"}
       </button>
     </form>
   );
