@@ -4,6 +4,9 @@
   "service": "workspace",
   "workspaceFolder": "/workspace",
   "forwardPorts": [3000, 3001, 4321],
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
   "postCreateCommand": "npm install --prefer-offline --no-audit --no-fund && npm run build --workspace=@gimnasio/shared && npm run prisma:generate --workspace=api && (test -f apps/api/.env || cp apps/api/.env.example apps/api/.env)",
   "customizations": {
     "vscode": {
