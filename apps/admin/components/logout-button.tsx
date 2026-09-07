@@ -12,20 +12,8 @@ export function LogoutButton() {
   }
 
   return (
-    <button
-      type="button"
-      onClick={cerrarSesion}
-      style={{
-        background: "transparent",
-        border: "1px solid #4b5563",
-        color: "#e5e7eb",
-        borderRadius: 6,
-        padding: "0.35rem 0.75rem",
-        cursor: "pointer",
-        fontSize: "0.85rem",
-      }}
-    >
-      Cerrar sesión
+    <button type="button" onClick={cerrarSesion} className="logout-button">
+      Salir
     </button>
   );
 }

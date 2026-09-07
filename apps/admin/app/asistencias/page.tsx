@@ -22,30 +22,41 @@ export default async function AsistenciasPage({
   }
 
   return (
-    <div>
-      <h1 style={{ marginTop: 0 }}>Listado de asistencias</h1>
+    <div className="content-grid">
+      <header className="page-header">
+        <div>
+          <p className="eyebrow">Control de acceso</p>
+          <h1>Asistencias</h1>
+          <p>Revisa los accesos registrados por los estudiantes del gimnasio.</p>
+        </div>
+        <span className="page-count">{asistencias.length} registros</span>
+      </header>
 
       {error ? (
-        <p style={{ color: "#b91c1c" }}>{error}</p>
+        <p className="error-message">{error}</p>
+      ) : asistencias.length === 0 ? (
+        <p className="empty-message">Todavía no hay asistencias registradas.</p>
       ) : (
-        <table className="tabla">
-          <thead>
-            <tr>
-              <th>Estudiante</th>
-              <th>Fecha</th>
-              <th>Registrada</th>
-            </tr>
-          </thead>
-          <tbody>
-            {asistencias.map((a) => (
-              <tr key={a.id}>
-                <td>{a.estudiante?.nombre ?? "—"}</td>
-                <td>{new Date(a.fecha).toLocaleString("es")}</td>
-                <td>{new Date(a.createdAt).toLocaleString("es")}</td>
+        <div className="table-wrap">
+          <table className="tabla">
+            <thead>
+              <tr>
+                <th>Estudiante</th>
+                <th>Fecha de visita</th>
+                <th>Hora de registro</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {asistencias.map((a) => (
+                <tr key={a.id}>
+                  <td><strong>{a.estudiante?.nombre ?? "Sin identificar"}</strong></td>
+                  <td>{new Date(a.fecha).toLocaleString("es")}</td>
+                  <td>{new Date(a.createdAt).toLocaleString("es")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

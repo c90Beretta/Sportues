@@ -40,14 +40,15 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+    <form onSubmit={onSubmit} className="form-grid">
       <label className="campo">
-        Email
+        Correo institucional
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           autoComplete="email"
+          placeholder="personal@ues.mx"
           required
         />
       </label>
@@ -58,16 +59,15 @@ export function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           autoComplete="current-password"
+          placeholder="••••••••"
           required
         />
       </label>
 
-      {error && (
-        <p style={{ color: "#b91c1c", margin: 0, fontSize: "0.85rem" }}>{error}</p>
-      )}
+      {error && <p className="form-error" role="alert">{error}</p>}
 
       <button type="submit" className="btn" disabled={cargando}>
-        {cargando ? "Ingresando…" : "Ingresar"}
+        {cargando ? "Ingresando…" : "Iniciar sesión"}
       </button>
     </form>
   );

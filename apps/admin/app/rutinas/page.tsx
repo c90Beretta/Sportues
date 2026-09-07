@@ -23,41 +23,63 @@ export default async function RutinasPage() {
   }
 
   return (
-    <div>
-      <h1 style={{ marginTop: 0 }}>Gestión de rutinas</h1>
+    <div className="content-grid">
+      <header className="page-header">
+        <div>
+          <p className="eyebrow">Planes de entrenamiento</p>
+          <h1>Rutinas</h1>
+          <p>Crea planes personalizados y consulta las rutinas asignadas.</p>
+        </div>
+        <span className="page-count">{rutinas.length} asignadas</span>
+      </header>
 
       {error ? (
-        <p style={{ color: "#b91c1c" }}>{error}</p>
+        <p className="error-message">{error}</p>
       ) : (
-        <>
-          <h2>Crear rutina</h2>
-          <CrearRutinaForm estudiantes={estudiantes} ejercicios={ejercicios} />
+        <div className="two-column-grid">
+          <section>
+            <div className="section-heading">
+              <h2>Nueva rutina</h2>
+              <p>Define el plan y los ejercicios para un estudiante.</p>
+            </div>
+            <CrearRutinaForm estudiantes={estudiantes} ejercicios={ejercicios} />
+          </section>
 
-          <h2>Rutinas asignadas</h2>
-          {rutinas.length === 0 ? (
-            <p style={{ color: "#6b7280" }}>Todavía no hay rutinas asignadas.</p>
-          ) : (
-            <ul style={{ listStyle: "none", padding: 0, display: "grid", gap: "0.75rem" }}>
-              {rutinas.map((r) => (
-                <li key={r.id} className="card">
-                  <strong>{r.nombre}</strong>
-                  {r.descripcion && <span style={{ color: "#6b7280" }}> — {r.descripcion}</span>}
-                  <div style={{ fontSize: "0.85rem", color: "#6b7280" }}>
-                    Estudiante: {r.estudiante?.nombre ?? r.estudianteId}
-                  </div>
-                  <ul style={{ fontSize: "0.85rem", marginBottom: 0 }}>
-                    {r.ejercicios.map((e) => (
-                      <li key={e.ejercicioId}>
-                        {e.nombre ?? e.ejercicioId} — {e.series}×{e.repeticiones} reps
-                        {e.descansoSegundos ? ` (${e.descansoSegundos}s de descanso)` : ""}
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
-            </ul>
-          )}
-        </>
+          <section>
+            <div className="section-heading">
+              <h2>Rutinas asignadas</h2>
+              <p>Planes de entrenamiento disponibles actualmente.</p>
+            </div>
+            {rutinas.length === 0 ? (
+              <p className="empty-message">Todavía no hay rutinas asignadas.</p>
+            ) : (
+              <ul className="routine-list">
+                {rutinas.map((r) => (
+                  <li key={r.id} className="card routine-card">
+                    <div className="routine-card-header">
+                      <div>
+                        <h3>{r.nombre}</h3>
+                        {r.descripcion && <p>{r.descripcion}</p>}
+                      </div>
+                      <span className="badge">{r.ejercicios.length} ejercicios</span>
+                    </div>
+                    <div className="routine-student">
+                      Estudiante: <strong>{r.estudiante?.nombre ?? r.estudianteId}</strong>
+                    </div>
+                    <ul className="routine-exercises">
+                      {r.ejercicios.map((e) => (
+                        <li key={e.ejercicioId}>
+                          {e.nombre ?? e.ejercicioId} · {e.series}×{e.repeticiones} repeticiones
+                          {e.descansoSegundos ? ` · ${e.descansoSegundos}s de descanso` : ""}
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </div>
       )}
     </div>
   );

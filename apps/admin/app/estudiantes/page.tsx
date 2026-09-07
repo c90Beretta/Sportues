@@ -20,36 +20,47 @@ export default async function EstudiantesPage() {
   }
 
   return (
-    <div>
-      <h1 style={{ marginTop: 0 }}>Listado de estudiantes</h1>
+    <div className="content-grid">
+      <header className="page-header">
+        <div>
+          <p className="eyebrow">Comunidad UES Fit</p>
+          <h1>Estudiantes</h1>
+          <p>Consulta los perfiles registrados, sus roles y membresías activas.</p>
+        </div>
+        <span className="page-count">{usuarios.length} registros</span>
+      </header>
 
       {error ? (
-        <p style={{ color: "#b91c1c" }}>{error}</p>
+        <p className="error-message">{error}</p>
+      ) : usuarios.length === 0 ? (
+        <p className="empty-message">Todavía no hay estudiantes registrados.</p>
       ) : (
-        <table className="tabla">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Email</th>
-              <th>Rol</th>
-              <th>Membresía</th>
-            </tr>
-          </thead>
-          <tbody>
-            {usuarios.map((u) => (
-              <tr key={u.id}>
-                <td>{u.nombre}</td>
-                <td>{u.email}</td>
-                <td>
-                  <span className={u.rol === "STAFF" ? "badge badge-staff" : "badge"}>
-                    {u.rol}
-                  </span>
-                </td>
-                <td>{u.membresia?.nombre ?? "—"}</td>
+        <div className="table-wrap">
+          <table className="tabla">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Correo institucional</th>
+                <th>Rol</th>
+                <th>Membresía</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {usuarios.map((u) => (
+                <tr key={u.id}>
+                  <td><strong>{u.nombre}</strong></td>
+                  <td>{u.email}</td>
+                  <td>
+                    <span className={u.rol === "STAFF" ? "badge badge-staff" : "badge"}>
+                      {u.rol}
+                    </span>
+                  </td>
+                  <td>{u.membresia?.nombre ?? "Sin membresía"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

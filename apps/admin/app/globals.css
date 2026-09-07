@@ -269,7 +269,7 @@ a { color: inherit; text-decoration: none; }
 .routine-card { padding: 20px; }
 .routine-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; }
 .routine-card h3 { margin: 0; color: var(--ues-vino); font-size: 1rem; }
-.routine-card > p { margin: 5px 0 0; color: var(--ues-gris); font-size: 0.8rem; }
+.routine-card-header p { margin: 5px 0 0; color: var(--ues-gris); font-size: 0.8rem; }
 .routine-student { margin-top: 13px; padding-top: 12px; border-top: 1px solid var(--ues-linea); color: var(--ues-gris); font-size: 0.76rem; }
 .routine-exercises { margin: 10px 0 0; padding-left: 18px; color: #5f5558; font-size: 0.78rem; line-height: 1.7; }
 

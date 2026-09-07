@@ -380,6 +380,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .form-error, .form-success { margin: 0; padding: 10px 12px; border-radius: 11px; font-size: 0.75rem; }
 .form-error { color: var(--ues-error); background: #fff0f2; }
 .form-success { color: var(--ues-exito); background: #eff9f4; }
+.checkin-action { display: grid; gap: 9px; }
+.checkin-action .primary-button { width: 100%; }
+.completion-message { display: block; margin-top: 6px; }
 
 @media (max-width: 860px) {
   .topbar-content { min-height: 70px; }
