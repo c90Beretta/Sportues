@@ -6,6 +6,7 @@ services:
     command: sleep infinity
     volumes:
       - ..:/workspace
+      - node_modules:/workspace/node_modules
       - npm-cache:/root/.npm
     environment:
       DATABASE_URL: postgresql://usuario:password@db:5432/gimnasio
@@ -33,4 +34,5 @@ services:
 
 volumes:
   pgdata:
+  node_modules:
   npm-cache:
