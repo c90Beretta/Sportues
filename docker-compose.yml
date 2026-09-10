@@ -6,8 +6,8 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      DATABASE_URL: ${DATABASE_URL:?Define DATABASE_URL con la URL interna de PostgreSQL en Dokploy}
-      JWT_SECRET: ${JWT_SECRET:?Define JWT_SECRET en Dokploy}
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_SECRET: ${JWT_SECRET}
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/').then(() => process.exit(0)).catch(() => process.exit(1))"]
       interval: 10s
