@@ -8,7 +8,7 @@ Repositorio único (workspace de npm) con tres aplicaciones y un paquete compart
 | `apps/admin`         | Panel administrativo (staff) con **Next.js** (App Router)              |
 | `apps/web`           | App pública de estudiantes con **Astro** (SSR), **Tailwind** e islas **React** |
 | `packages/shared`    | Tipos de dominio y esquemas de validación compartidos (`zod`)          |
-| `.devcontainer`      | Entorno de desarrollo (Node 20 + PostgreSQL 16) con Docker Compose     |
+| `.devcontainer`      | Entorno de desarrollo (Node 24 + PostgreSQL 16) con Docker Compose     |
 | `.github/workflows`  | CI por app con *path filters*                                          |
 
 ## Requisitos
@@ -20,7 +20,7 @@ Repositorio único (workspace de npm) con tres aplicaciones y un paquete compart
 
 1. Cloná el repositorio y abrí la carpeta raíz en VS Code.
 2. Comando: **Dev Containers: Reopen in Container**.
-3. Al crearse, el contenedor instala dependencias (`npm install`), genera el cliente de Prisma y copia `apps/api/.env.example` a `apps/api/.env`.
+3. Al crearse, el contenedor instala dependencias de forma reproducible (`npm ci`), genera el cliente de Prisma y copia `apps/api/.env.example` a `apps/api/.env`.
 
 En el devcontainer:
 
@@ -76,4 +76,7 @@ Tres workflows en `.github/workflows/` (`api.yml`, `admin.yml`, `web.yml`). Cada
 ## Documentación
 
 - `docs/arquitectura.md` — arquitectura y decisiones de diseño.
+- `docs/project-proposal.md` — propuesta del proyecto para el issue de GitHub.
+- `docs/pair-log.md` — registro de sesiones reales de pair programming.
+- `docs/github-setup.md` — configuración manual de branch protection y tablero.
 - README de cada app con instrucciones específicas.

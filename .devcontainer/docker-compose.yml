@@ -1,6 +1,8 @@
 services:
   workspace:
-    image: node:20
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: gimnasio-workspace
     working_dir: /workspace
     command: sleep infinity
@@ -17,10 +19,11 @@ services:
       - "3001:3001"
       - "4321:4321"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   db:
-    image: postgres:16
+    image: postgres:16-bookworm
     container_name: gimnasio-db
     restart: unless-stopped
     environment:
@@ -31,6 +34,11 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U usuario -d gimnasio"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
 
 volumes:
   pgdata:

@@ -7,7 +7,7 @@ Repositorio único (workspace de npm) con tres aplicaciones y un paquete de cód
 ```
 ┌──────────────────────────────────────────────────┐
 │                Devcontainer (raíz)               │
-│   docker-compose: workspace (Node 20) + db (PG16)│
+│   docker-compose: workspace (Node 24) + db (PG16)│
 └────────────────────┬─────────────────────────────┘
                      │
    ┌─────────────────┼──────────────────────┐

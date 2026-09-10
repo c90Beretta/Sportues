@@ -1,0 +1,27 @@
+name: Reporte de error
+description: Reporta un comportamiento reproducible.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: textarea
+    id: comportamiento
+    attributes:
+      label: Comportamiento observado
+    validations:
+      required: true
+  - type: textarea
+    id: reproduccion
+    attributes:
+      label: Pasos para reproducirlo
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Comportamiento esperado
+    validations:
+      required: true
