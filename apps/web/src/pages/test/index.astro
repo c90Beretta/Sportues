@@ -1,5 +1,5 @@
 ---
-import Greeting from "../../components/Greeting.astro";
+import Greeting from "@/components/Greeting";
 import Layout from "../../layouts/Layout.astro";
 
 const name = "World";
@@ -8,6 +8,6 @@ const name = "World";
 <Layout title="My First Frontend · UES Fit">
   <main class="min-h-screen bg-gray-50 p-8">
     <h1 class="text-2xl font-bold text-gray-900">My First Frontend</h1>
-    <Greeting name={name} />
+    <Greeting client:only="react" />
   </main>
 </Layout>
