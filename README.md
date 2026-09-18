@@ -30,6 +30,14 @@ npm run dev             # levanta las tres apps en paralelo
 npm run prisma:studio   # (opcional) explorar la base de datos
 ```
 
+Verificación del entorno compartido:
+
+```bash
+node --version
+git --version
+psql postgresql://usuario:password@db:5432/gimnasio -c "select 1;"
+```
+
 Si querés un usuario de prueba:
 
 ```bash
