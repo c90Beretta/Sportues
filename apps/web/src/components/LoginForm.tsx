@@ -50,7 +50,7 @@ export default function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
-            placeholder="ej. daniela.rios@ues.mx"
+            placeholder="ejemplo: 23020220070@ues.mx"
             required
             className="w-full h-12 pl-11 pr-4 rounded-xl bg-surface-container-lowest text-on-surface text-body-md outline-none shadow-sm ring-1 ring-outline/25 focus:ring-2 focus:ring-secondary-container transition-all placeholder:text-outline/70"
           />
@@ -73,7 +73,7 @@ export default function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
-            placeholder="••••••••••••"
+            placeholder="**********"
             required
             minLength={8}
             className="w-full h-12 pl-11 pr-12 rounded-xl bg-surface-container-lowest text-on-surface text-body-md outline-none shadow-sm ring-1 ring-outline/25 focus:ring-2 focus:ring-secondary-container transition-all placeholder:text-outline/70"
