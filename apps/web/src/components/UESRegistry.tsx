@@ -26,7 +26,7 @@ export default function RegistroAtletaForm() {
     }
 
     setError(null);
-    alert("Formulario completo, todavía no se guarda en ningún lado, falta conectar el backend.");
+window.location.href = "/inicio";
   }
 
   return (
