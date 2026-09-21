@@ -1,0 +1,39 @@
+---
+import Layout from "../layouts/Layout.astro";
+import UESRegistry from "../components/UESRegistry";
+---
+<Layout title="Registro - UES FIT">
+  <header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+    <div class="h-16 px-4 flex items-center justify-between gap-2 max-w-md mx-auto">
+      <div class="flex items-center gap-2 min-w-0">
+        <a href="/login" aria-label="Regresar" class="w-11 h-11 rounded-full flex items-center justify-center text-primary-container hover:bg-surface-container transition-colors">
+          <span class="material-symbols-outlined text-2xl">arrow_back</span>
+        </a>
+        <img alt="UES FIT" class="h-8 w-auto object-contain" src="img/logo-ues-fit.png" />
+      </div>
+      <span class="font-heading text-headline-sm text-on-surface font-bold truncate max-w-[200px]">Perfil Deportivo</span>
+    </div>
+  </header>
+
+  <div class="pt-20 pb-8 px-4 max-w-md mx-auto">
+    <div class="pb-4">
+      <h1 class="font-heading text-headline-lg-mobile text-text-primary">Completa tu perfil</h1>
+      <p class="text-body-md text-text-muted mt-1">Personalizaremos tus rutinas y el acceso a las salas de pesas según tu nivel.</p>
+    </div>
+
+    <div class="mb-4">
+      <div class="relative overflow-hidden rounded-xl bg-primary-container text-white p-4 shadow-md">
+        <div class="relative z-10 max-w-[70%]">
+          <div class="inline-flex items-center gap-1 bg-secondary-container/20 px-2 py-0.5 rounded-full mb-1">
+            <span class="material-symbols-outlined text-[14px] text-tertiary-fixed-dim">local_fire_department</span>
+            <span class="text-label-sm font-bold tracking-wide">COMUNIDAD BERRENDOS</span>
+          </div>
+          <p class="text-label-lg font-heading font-bold">Instalaciones de Alto Rendimiento UES</p>
+          <p class="text-body-sm text-white/80 mt-0.5">Acceso automatizado y asesoría certificada en campus.</p>
+        </div>
+      </div>
+    </div>
+
+    <UESRegistry client:load />
+  </div>
+</Layout>
