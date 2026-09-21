@@ -43,6 +43,7 @@ export default async function EstudiantesPage() {
                 <th>Correo institucional</th>
                 <th>Rol</th>
                 <th>Membresía</th>
+                <th>Fecha de registro</th>
               </tr>
             </thead>
             <tbody>
@@ -56,6 +57,7 @@ export default async function EstudiantesPage() {
                     </span>
                   </td>
                   <td>{u.membresia?.nombre ?? "Sin membresía"}</td>
+                  <td>{new Date(u.createdAt).toLocaleDateString("es-MX")}</td>
                 </tr>
               ))}
             </tbody>

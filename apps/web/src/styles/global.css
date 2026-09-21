@@ -15,6 +15,43 @@
   --ues-sombra: 0 18px 50px rgba(77, 19, 32, 0.09);
 }
 
+@theme {
+  /* Colors */
+  --color-primary: var(--ues-vino);
+  --color-primary-container: var(--ues-vino-oscuro);
+  --color-secondary: var(--ues-naranja);
+  --color-secondary-container: var(--ues-dorado);
+  --color-tertiary-fixed-dim: var(--ues-dorado);
+  
+  --color-text-primary: var(--ues-tinta);
+  --color-text-muted: var(--ues-gris);
+  --color-on-surface: var(--ues-tinta);
+  
+  --color-background: var(--ues-fondo);
+  --color-surface: #FFFFFF;
+  --color-surface-container-lowest: #FFFFFF;
+  --color-surface-container-low: var(--ues-vino-suave);
+  --color-surface-container: var(--ues-linea);
+  --color-surface-container-high: #e0d9db;
+  --color-surface-container-highest: var(--ues-gris);
+  
+  --color-outline: var(--ues-linea);
+  --color-state-error: var(--ues-error);
+  --color-state-success: var(--ues-exito);
+
+  /* Typography */
+  --font-heading: "Montserrat", sans-serif;
+
+  /* Text Sizes */
+  --text-headline-lg-mobile: 2rem;
+  --text-headline-sm: 1.5rem;
+  --text-label-lg: 1rem;
+  --text-label-md: 0.875rem;
+  --text-label-sm: 0.75rem;
+  --text-body-md: 1rem;
+  --text-body-sm: 0.875rem;
+}
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
