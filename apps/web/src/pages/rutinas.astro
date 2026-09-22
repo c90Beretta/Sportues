@@ -1,0 +1,26 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getSession } from "../lib/auth";
+
+//const sesion = await getSession(Astro.cookies);
+//if (!sesion) {
+ // return Astro.redirect("/login");
+//}
+
+const sesion = { usuario: { email: "daniela.rios@ues.mx" } };
+const nombreUsuario = "Daniela";
+---
+http://localhost:4321/test-nav
+<Layout title="rutinas · Gimnasio" sesion={sesion}>
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">Gimnasio UES</p>
+      <h1>Máquinas</h1>
+      <p>Muy pronto vas a poder ver el catálogo de rutinas disponibles.</p>
+    </div>
+  </header>
+  <div class="ues-card empty-state">
+    <strong>Sección en construcción</strong>
+    <p>Estamos trabajando en esta vista.</p>
+  </div>
+</Layout>

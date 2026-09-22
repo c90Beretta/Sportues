@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-
+import BottomNavigationBar from "../components/BottomNavigationBar";
 interface Props {
   title: string;
   sesion?: { usuario: { email: string } } | null;
@@ -20,6 +20,13 @@ const enlaces = [
   { href: "/dashboard", etiqueta: "Mi rutina", icono: "rutina" },
   { href: "/asistencias", etiqueta: "Asistencias", icono: "historial" },
 ] as const;
+
+const enlacesMoviles = [
+  { href: "/dashboard", etiqueta: "Inicio", icono: "fitness_center" },
+  { href: "/maquinas", etiqueta: "Máquinas", icono: "sports_gymnastics" },
+  { href: "/rutinas", etiqueta: "Rutinas", icono: "local_fire_department" },
+  { href: "/perfil", etiqueta: "Perfil", icono: "account_circle" },
+] as const;
 ---
 
 <!doctype html>
@@ -32,6 +39,7 @@ const enlaces = [
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
   </head>
   <body class:list={{ "app-body": sesion, "auth-body": !sesion }}>
     {
@@ -85,34 +93,7 @@ const enlaces = [
             <slot />
           </main>
 
-          <nav class="bottom-navigation" aria-label="Navegación móvil">
-            {enlaces.map((enlace) => (
-              <a
-                href={enlace.href}
-                class:list={{ active: rutaActual === enlace.href }}
-                aria-current={rutaActual === enlace.href ? "page" : undefined}
-              >
-                {enlace.icono === "rutina" ? (
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M4 8v8M7 6v12M17 6v12M20 8v8M7 12h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                  </svg>
-                ) : (
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M7 3v3M17 3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                    <path d="m8 15 2 2 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                )}
-                <span>{enlace.etiqueta}</span>
-              </a>
-            ))}
-            <a href="#perfil">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8" />
-                <path d="M4.5 21a7.5 7.5 0 0 1 15 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-              </svg>
-              <span>Perfil</span>
-            </a>
-          </nav>
+          <BottomNavigationBar client:load currentPath={rutaActual} />
         </div>
       ) : (
         <main class="auth-shell">
