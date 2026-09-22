@@ -11,11 +11,14 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "astro-build.astro-vscode",
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "prisma.prisma",
         "ms-vscode.vscode-typescript-next",
-        "bradlc.vscode-tailwindcss"
+        "bradlc.vscode-tailwindcss",
+        "usernamehw.errorlens",
+        "midudev.better-svg"
       ],
       "settings": {
         "typescript.tsdk": "node_modules/typescript/lib",
