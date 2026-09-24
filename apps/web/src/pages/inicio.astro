@@ -1,0 +1,19 @@
+---
+import Layout from "../layouts/Layout.astro";
+import InicioIsla from "../components/InicioIsla";
+// import { getSession } from "../lib/auth"; 
+
+// 1. Comentamos la seguridad para que no nos expulse al login
+// const sesion = await getSession(Astro.cookies);
+// if (!sesion) {
+//   return Astro.redirect("/login");
+// }
+
+// 2. Creamos una sesión "falsa" estática para hacer pruebas
+const sesion = { usuario: { email: "daniela.rios@ues.mx" } };
+const nombreUsuario = "Daniela";
+---
+
+<Layout title="Inicio · UES FIT" sesion={sesion}>
+  <InicioIsla nombre={nombreUsuario} client:load />
+</Layout>
