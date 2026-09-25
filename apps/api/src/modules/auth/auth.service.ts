@@ -25,7 +25,7 @@ export class AuthService {
       this.config.get<string>("JWT_SECRET") ?? "dev-secret",
       { expiresIn: "8h" },
     );
-
+    // Type UsuarioSinPaswword on Usuario.service
     const { passwordHash: _passwordHash, ...usuarioSinPassword } = usuario;
     return { accessToken, usuario: { ...usuarioSinPassword, rol: usuario.rol as AutenticacionResponse["usuario"]["rol"] } };
   }

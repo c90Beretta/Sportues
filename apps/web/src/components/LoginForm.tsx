@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { loginSchema } from "@gimnasio/shared";
 
 export default function LoginForm() {
@@ -31,8 +31,16 @@ export default function LoginForm() {
       return;
     }
 
+    if (res.ok){
+      handleSaveSession();
+    }
+
     window.location.href = "/dashboard";
   }
+
+  const handleSaveSession = useCallback((data: any )=>{
+
+  },[]); 
 
   return (
     <form onSubmit={onSubmit} className="login-form">
