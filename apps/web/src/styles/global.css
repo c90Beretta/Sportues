@@ -463,6 +463,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   padding: 5px 2px;
   color: var(--ues-gris);
   text-decoration: none;
+  transition: color 160ms ease;
 }
 /* Cambios hechos para los iconos y elementos visuales dentro de la barra de navegacion */
 
@@ -472,7 +473,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   width: 34px;
   height: 34px;
   border-radius: 999px;
-  transition: background 160ms ease, color 160ms ease;
+  transition: background 160ms ease, color 160ms ease, transform 120ms ease;
 }
 .bottom-navigation .bn-icon .material-symbols-outlined {
   font-size: 21px;
@@ -481,10 +482,21 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .bottom-navigation .bn-label {
   font-size: 0.64rem;
   font-weight: 700;
+  transition: color 160ms ease;
 }
 .bottom-navigation a.active { color: var(--ues-vino); }
 .bottom-navigation a.active .bn-icon { background: var(--ues-vino-suave); }
 .bottom-navigation a.active .bn-label { font-weight: 800; }
+
+/* hover + press feedback for the mobile nav */
+.bottom-navigation a:hover { color: var(--ues-vino); }
+.bottom-navigation a:hover .bn-label { color: var(--ues-vino); }
+.bottom-navigation a:hover .bn-icon {
+  background: rgba(244, 233, 236, 0.6);
+  color: var(--ues-vino);
+}
+.bottom-navigation a:active .bn-icon { transform: scale(0.88); }
+.bottom-navigation a.active:hover .bn-icon { background: var(--ues-vino-suave); }
   .page-heading { margin-bottom: 21px; align-items: flex-start; flex-direction: column; gap: 12px; }
   .dashboard-grid { gap: 16px; }
   .access-summary, .section-card, .checkin-card { padding: 21px; border-radius: 23px; }

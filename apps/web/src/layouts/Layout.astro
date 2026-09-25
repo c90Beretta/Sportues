@@ -1,6 +1,5 @@
 ---
 import "../styles/global.css";
-import BottomNavigationBar from "../components/BottomNavigationBar";
 interface Props {
   title: string;
   sesion?: { usuario: { email: string } } | null;
@@ -12,7 +11,7 @@ const nombreUsuario = sesion?.usuario.email
   .split("@")[0]
   .split(/[._-]/)
   .filter(Boolean)
-  .map((parte) => parte.charAt(0).toUpperCase() + parte.slice(1))
+  .map((parte:any) => parte.charAt(0).toUpperCase() + parte.slice(1))
   .join(" ");
 const inicial = nombreUsuario?.charAt(0) || "U";
 
@@ -39,7 +38,6 @@ const enlacesMoviles = [
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
   </head>
   <body class:list={{ "app-body": sesion, "auth-body": !sesion }}>
     {
@@ -93,7 +91,24 @@ const enlacesMoviles = [
             <slot />
           </main>
 
-          <BottomNavigationBar client:load currentPath={rutaActual} />
+          <nav class="bottom-navigation" aria-label="Navegación móvil">
+            {
+              enlacesMoviles.map((enlace) => (
+                <a
+                  href={enlace.href}
+                  class:list={{ active: rutaActual === enlace.href }}
+                  aria-current={rutaActual === enlace.href ? "page" : undefined}
+                >
+                  <span class="bn-icon">
+                    <span class="material-symbols-outlined" aria-hidden="true">
+                      {enlace.icono}
+                    </span>
+                  </span>
+                  <span class="bn-label">{enlace.etiqueta}</span>
+                </a>
+              ))
+            }
+          </nav>
         </div>
       ) : (
         <main class="auth-shell">
