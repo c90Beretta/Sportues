@@ -1,5 +1,9 @@
 import { useCallback, useState } from "react";
-import { loginSchema } from "@gimnasio/shared";
+import {
+  loginSchema,
+  type AutenticacionResponse,
+  type Usuario,
+} from "@gimnasio/shared";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -31,16 +35,8 @@ export default function LoginForm() {
       return;
     }
 
-    if (res.ok){
-      handleSaveSession();
-    }
-
     window.location.href = "/dashboard";
   }
-
-  const handleSaveSession = useCallback((data: any )=>{
-
-  },[]); 
 
   return (
     <form onSubmit={onSubmit} className="login-form">
@@ -48,7 +44,13 @@ export default function LoginForm() {
         Correo institucional
         <span className="input-shell">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M4 6h16v12H4zM4 7l8 6 8-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M4 6h16v12H4zM4 7l8 6 8-6"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
           <input
             type="email"
@@ -64,8 +66,21 @@ export default function LoginForm() {
         Contraseña
         <span className="input-shell">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.8" />
-            <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            <rect
+              x="5"
+              y="10"
+              width="14"
+              height="10"
+              rx="2"
+              stroke="currentColor"
+              strokeWidth="1.8"
+            />
+            <path
+              d="M8 10V7a4 4 0 0 1 8 0v3"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            />
           </svg>
           <input
             type="password"
@@ -78,13 +93,13 @@ export default function LoginForm() {
         </span>
       </label>
 
-      {error && <p className="form-error" role="alert">{error}</p>}
+      {error && (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      )}
 
-      <button
-        type="submit"
-        disabled={cargando}
-        className="primary-button"
-      >
+      <button type="submit" disabled={cargando} className="primary-button">
         {cargando ? "Ingresando…" : "Iniciar sesión"}
       </button>
     </form>
