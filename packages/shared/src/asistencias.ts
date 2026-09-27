@@ -10,8 +10,10 @@ export const asistenciaSchema = z.object({
       email: z.string().email(),
     })
     .optional(),
-  fecha: z.coerce.date(),
-  createdAt: z.coerce.date(),
+  entrenadorEnTurnoId: z.string().uuid().nullable(),
+  horaEntrada: z.coerce.date(),
+  horaSalida: z.coerce.date().nullable(),
+  cerradaAutomaticamente: z.boolean(),
 });
 export type Asistencia = z.infer<typeof asistenciaSchema>;
 
