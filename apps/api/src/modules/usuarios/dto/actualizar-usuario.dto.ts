@@ -1,4 +1,4 @@
-import { IsEmail, IsIn, IsOptional, IsString, IsUUID, MinLength } from "class-validator";
+import { IsDateString, IsEmail, IsIn, IsOptional, IsString, MinLength } from "class-validator";
 
 export class ActualizarUsuarioDto {
   @IsOptional()
@@ -19,6 +19,26 @@ export class ActualizarUsuarioDto {
   rol?: "ESTUDIANTE" | "STAFF";
 
   @IsOptional()
-  @IsUUID()
-  membresiaId?: string;
+  @IsString()
+  numeroExpediente?: string;
+
+  @IsOptional()
+  @IsString()
+  carrera?: string;
+
+  @IsOptional()
+  @IsIn(["PRINCIPIANTE", "INTERMEDIO", "AVANZADO"])
+  nivelExperiencia?: "PRINCIPIANTE" | "INTERMEDIO" | "AVANZADO";
+
+  @IsOptional()
+  @IsIn(["PENDIENTE", "APROBADO", "RECHAZADO"])
+  estadoRegistro?: "PENDIENTE" | "APROBADO" | "RECHAZADO";
+
+  @IsOptional()
+  @IsString()
+  certificadoMedicoUrl?: string;
+
+  @IsOptional()
+  @IsDateString()
+  certificadoVigenteHasta?: string;
 }

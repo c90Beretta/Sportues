@@ -7,68 +7,154 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ============ USERS AND ACCESS ============
+
 model Usuario {
-  id           String     @id @default(uuid())
+  id           String @id @default(uuid())
   nombre       String
-  email        String     @unique
+  email        String @unique
   passwordHash String
-  rol          String     @default("ESTUDIANTE") // "ESTUDIANTE" | "STAFF"
-  membresiaId  String?
-  membresia    Membresia? @relation(fields: [membresiaId], references: [id])
-  rutinas      Rutina[]
-  asistencias  Asistencia[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  rol          String @default("ESTUDIANTE") // "ESTUDIANTE" | "STAFF"
+
+  // Only applies when rol = "ESTUDIANTE":
+  numeroExpediente        String?   @unique
+  carrera                 String?
+  nivelExperiencia        String? // "PRINCIPIANTE" | "INTERMEDIO" | "AVANZADO"
+  estadoRegistro          String? // "PENDIENTE" | "APROBADO" | "RECHAZADO"
+  certificadoMedicoUrl    String?
+  certificadoVigenteHasta DateTime?
+
+  // Which STAFF member reviewed this student's medical certificate:
+  revisadoPorId    String?
+  revisadoPor      Usuario?  @relation("RevisionesCertificado", fields: [revisadoPorId], references: [id])
+  revisionesHechas Usuario[] @relation("RevisionesCertificado")
+
+  rutinasCreadas       Rutina[]
+  asistencias          Asistencia[]      @relation("AsistenciasEstudiante")
+  turnosComoEntrenador TurnoEntrenador[]
+  asistenciasEnTurno   Asistencia[]      @relation("AsistenciasEnTurno")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model Membresia {
-  id           String    @id @default(uuid())
-  nombre       String
-  descripcion  String?
-  precio       Float
-  duracionDias Int
-  usuarios     Usuario[]
-  createdAt    DateTime  @default(now())
+// Simulates the official UES student registry (we have no real access to it)
+model PadronUES {
+  numeroExpediente String @id
+  nombre           String
+  carrera          String
 }
 
-model Rutina {
-  id           String            @id @default(uuid())
-  nombre       String
-  descripcion  String?
-  estudianteId String
-  estudiante   Usuario           @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
-  ejercicios   RutinaEjercicio[]
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
+// Used for institutional-email verification: registration AND "forgot password"
+model CodigoVerificacion {
+  id        String   @id @default(uuid())
+  email     String
+  codigo    String
+  expiraEn  DateTime
+  usado     Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// ============ INVENTORY AND EXERCISES ============
+
+model Equipo {
+  id                  String  @id @default(uuid())
+  nombre              String
+  categoria           String?
+  cantidad            Int     @default(1)
+  ubicacion           String? // e.g. "Zona A"
+  estado              String  @default("ACTIVA") // "ACTIVA" | "FUERA_DE_SERVICIO"
+  notaFueraDeServicio String?
+
+  ejercicios         Ejercicio[]
+  notasMantenimiento NotaMantenimiento[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Maintenance log, separate from the simple ACTIVA/FUERA_DE_SERVICIO status
+model NotaMantenimiento {
+  id          String   @id @default(uuid())
+  equipoId    String
+  equipo      Equipo   @relation(fields: [equipoId], references: [id])
+  descripcion String
+  resuelta    Boolean  @default(false)
+  createdAt   DateTime @default(now())
 }
 
 model Ejercicio {
-  id             String            @id @default(uuid())
-  nombre         String
-  descripcion    String?
-  grupoMuscular  String?
-  rutinas        RutinaEjercicio[]
-  createdAt      DateTime          @default(now())
+  id               String   @id @default(uuid())
+  nombre           String
+  descripcion      String?
+  gruposMusculares String[] @default([])
+
+  equipoId String? // null = free exercise, no equipment needed (push-ups, plank, etc.)
+  equipo   Equipo? @relation(fields: [equipoId], references: [id])
+
+  rutinas   RutinaEjercicio[]
+  createdAt DateTime          @default(now())
+}
+
+// ============ ROUTINES ============
+
+model Rutina {
+  id               String   @id @default(uuid())
+  nombre           String
+  origen           String   @default("OFICIAL") // "OFICIAL" (coach-made) | "PERSONAL" (student-made)
+  nivel            String? // "PRINCIPIANTE" | "INTERMEDIO" | "AVANZADO" — only meaningful for OFICIAL
+  descripcion      String?
+  gruposMusculares String[] @default([])
+
+  creadaPorId String // STAFF if origen = OFICIAL, the student themself if origen = PERSONAL
+  creadaPor   Usuario @relation(fields: [creadaPorId], references: [id])
+
+  ejercicios RutinaEjercicio[]
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
 }
 
 model RutinaEjercicio {
-  rutinaId        String
-  ejercicioId     String
-  series          Int
-  repeticiones    Int
+  rutinaId    String
+  rutina      Rutina    @relation(fields: [rutinaId], references: [id])
+  ejercicioId String
+  ejercicio   Ejercicio @relation(fields: [ejercicioId], references: [id])
+
+  orden            Int
+  series           Int
+  repeticiones     Int
   descansoSegundos Int?
-  rutina          Rutina    @relation(fields: [rutinaId], references: [id], onDelete: Cascade)
-  ejercicio       Ejercicio @relation(fields: [ejercicioId], references: [id], onDelete: Cascade)
 
   @@id([rutinaId, ejercicioId])
 }
 
-model Asistencia {
-  id          String   @id @default(uuid())
-  estudianteId String
-  estudiante  Usuario  @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
-  fecha       DateTime @default(now())
-  createdAt   DateTime @default(now())
+// ============ GYM ACCESS ============
 
-  @@index([estudianteId, fecha])
+model TurnoEntrenador {
+  id           String   @id @default(uuid())
+  entrenadorId String
+  entrenador   Usuario  @relation(fields: [entrenadorId], references: [id])
+  horaInicio   String // "07:00"
+  horaFin      String // "13:00"
+  diasSemana   String[] // ["LUN","MAR","MIE","JUE","VIE"]
+}
+
+model Asistencia {
+  id           String  @id @default(uuid())
+  estudianteId String
+  estudiante   Usuario @relation("AsistenciasEstudiante", fields: [estudianteId], references: [id])
+
+  // Snapshot of who was the coach on duty at check-in time — never recalculated later
+  entrenadorEnTurnoId String?
+  entrenadorEnTurno   Usuario? @relation("AsistenciasEnTurno", fields: [entrenadorEnTurnoId], references: [id])
+
+  horaEntrada            DateTime  @default(now())
+  horaSalida             DateTime?
+  cerradaAutomaticamente Boolean   @default(false) // true if auto-closed after 2.5h with no exit scan
+}
+
+// Prevents a single rotating QR token from being reused (replay protection)
+model TokenQRUsado {
+  jti     String   @id // unique serial number of each generated QR token
+  usadoEn DateTime @default(now())
 }

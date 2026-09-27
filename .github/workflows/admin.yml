@@ -28,5 +28,8 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Build shared package
+        run: npm run build --workspace=@gimnasio/shared
+
       - name: Build Next.js
         run: npm run build --workspace=admin

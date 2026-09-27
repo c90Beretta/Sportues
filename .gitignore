@@ -7,6 +7,8 @@ build/
 .next/
 out/
 .astro/
+dist-esm/
+**/dist-esm/
 coverage/
 
 # Entorno

@@ -8,9 +8,7 @@ const INCLUDE_ASISTENCIA = {
   estudiante: { select: { id: true, nombre: true, email: true } },
 } satisfies Prisma.AsistenciaInclude;
 
-type AsistenciaConEstudiante = Prisma.AsistenciaGetPayload<{
-  include: typeof INCLUDE_ASISTENCIA;
-}>;
+type AsistenciaConEstudiante = Prisma.AsistenciaGetPayload<{ include: typeof INCLUDE_ASISTENCIA }>;
 
 @Injectable()
 export class AsistenciasService {
@@ -22,11 +20,12 @@ export class AsistenciasService {
   ): Promise<Asistencia> {
     const estudianteId = usuario.rol === "STAFF" ? (dto.estudianteId ?? usuario.sub) : usuario.sub;
 
+    // TODO: falta la lógica de "si ya hay una asistencia abierta, esto es una salida, no una entrada nueva"
+    // — la dejamos pendiente de diseñar junto con el QR rotativo, no es parte de este arreglo.
     const asistencia = await this.prisma.asistencia.create({
       data: { estudianteId },
       include: INCLUDE_ASISTENCIA,
     });
-
     return this.mapear(asistencia);
   }
 
@@ -47,10 +46,9 @@ export class AsistenciasService {
 
     const asistencias = await this.prisma.asistencia.findMany({
       where,
-      orderBy: { fecha: "desc" },
+      orderBy: { horaEntrada: "desc" },
       include: INCLUDE_ASISTENCIA,
     });
-
     return asistencias.map((a) => this.mapear(a));
   }
 
@@ -59,8 +57,10 @@ export class AsistenciasService {
       id: a.id,
       estudianteId: a.estudianteId,
       estudiante: a.estudiante,
-      fecha: a.fecha,
-      createdAt: a.createdAt,
+      entrenadorEnTurnoId: a.entrenadorEnTurnoId,
+      horaEntrada: a.horaEntrada,
+      horaSalida: a.horaSalida,
+      cerradaAutomaticamente: a.cerradaAutomaticamente,
     };
   }
 }
