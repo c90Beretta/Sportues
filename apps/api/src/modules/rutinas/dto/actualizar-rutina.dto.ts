@@ -1,13 +1,5 @@
 import { Type } from "class-transformer";
-import {
-  IsArray,
-  IsInt,
-  IsOptional,
-  IsString,
-  IsUUID,
-  Min,
-  ValidateNested,
-} from "class-validator";
+import { IsArray, IsIn, IsOptional, IsString, ValidateNested } from "class-validator";
 import { EjercicioEnRutinaDto } from "./rutina-dto";
 
 export class ActualizarRutinaDto {
@@ -20,8 +12,13 @@ export class ActualizarRutinaDto {
   descripcion?: string;
 
   @IsOptional()
-  @IsUUID()
-  estudianteId?: string;
+  @IsIn(["PRINCIPIANTE", "INTERMEDIO", "AVANZADO"])
+  nivel?: "PRINCIPIANTE" | "INTERMEDIO" | "AVANZADO";
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  gruposMusculares?: string[];
 
   @IsOptional()
   @IsArray()

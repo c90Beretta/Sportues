@@ -14,7 +14,8 @@ export class EjerciciosService {
       data: {
         nombre: dto.nombre,
         descripcion: dto.descripcion ?? null,
-        grupoMuscular: dto.grupoMuscular ?? null,
+        gruposMusculares: dto.gruposMusculares ?? [],
+        equipoId: dto.equipoId ?? null,
       },
     });
     return this.mapear(ejercicio);
@@ -40,7 +41,8 @@ export class EjerciciosService {
       data: {
         nombre: dto.nombre,
         descripcion: dto.descripcion,
-        grupoMuscular: dto.grupoMuscular,
+        gruposMusculares: dto.gruposMusculares,
+        equipoId: dto.equipoId,
       },
     });
     return this.mapear(ejercicio);
@@ -56,7 +58,8 @@ export class EjerciciosService {
       id: e.id,
       nombre: e.nombre,
       descripcion: e.descripcion,
-      grupoMuscular: e.grupoMuscular,
+      gruposMusculares: e.gruposMusculares,
+      equipoId: e.equipoId,
       createdAt: e.createdAt,
     };
   }

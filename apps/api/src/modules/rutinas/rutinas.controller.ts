@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Delete,
-  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
@@ -20,51 +19,52 @@ import { ActualizarRutinaDto } from "./dto/actualizar-rutina.dto";
 import { CrearRutinaDto } from "./dto/rutina-dto";
 import { RutinasService } from "./rutinas.service";
 
+type PeticionAutenticada = Request & { user: { sub: string; rol: "ESTUDIANTE" | "STAFF" } };
+
 @Controller("rutinas")
 export class RutinasController {
   constructor(private readonly rutinasService: RutinasService) {}
 
-  @Roles(ROL_STAFF)
+  // STAFF crea OFICIALES, ESTUDIANTE crea PERSONALES — lo decide el servicio según el rol.
+  @Roles(ROL_STAFF, ROL_ESTUDIANTE)
   @Post()
-  crear(@Body() dto: CrearRutinaDto): Promise<Rutina> {
-    return this.rutinasService.crear(dto);
+  crear(@Body() dto: CrearRutinaDto, @Req() req: PeticionAutenticada): Promise<Rutina> {
+    return this.rutinasService.crear(dto, req.user);
   }
 
   @Roles(ROL_ESTUDIANTE)
   @Get("mias")
-  misRutinas(@Req() req: Request & { user: { sub: string } }): Promise<Rutina[]> {
-    return this.rutinasService.misRutinas(req.user.sub);
+  misRutinas(@Req() req: PeticionAutenticada): Promise<Rutina[]> {
+    return this.rutinasService.misRutinasPersonales(req.user.sub);
   }
 
-  @Roles(ROL_STAFF)
+  // Catálogo oficial, visible para todos, filtrable por nivel: /rutinas?nivel=INTERMEDIO
+  @Roles(ROL_STAFF, ROL_ESTUDIANTE)
   @Get()
-  listar(@Query("estudianteId") estudianteId?: string): Promise<Rutina[]> {
-    return this.rutinasService.listar(estudianteId);
+  listar(@Query("nivel") nivel?: string): Promise<Rutina[]> {
+    return this.rutinasService.listarCatalogoOficial(nivel);
   }
 
   @Roles(ROL_STAFF, ROL_ESTUDIANTE)
   @Get(":id")
-  async obtener(
-    @Param("id") id: string,
-    @Req() req: Request & { user: { sub: string; rol: string } },
-  ): Promise<Rutina> {
-    const rutina = await this.rutinasService.obtener(id);
-    if (req.user.rol !== ROL_STAFF && rutina.estudianteId !== req.user.sub) {
-      throw new ForbiddenException("Solo puedes consultar tus propias rutinas");
-    }
-    return rutina;
+  obtener(@Param("id") id: string, @Req() req: PeticionAutenticada): Promise<Rutina> {
+    return this.rutinasService.obtener(id, req.user);
   }
 
-  @Roles(ROL_STAFF)
+  @Roles(ROL_STAFF, ROL_ESTUDIANTE)
   @Patch(":id")
-  actualizar(@Param("id") id: string, @Body() dto: ActualizarRutinaDto): Promise<Rutina> {
-    return this.rutinasService.actualizar(id, dto);
+  actualizar(
+    @Param("id") id: string,
+    @Body() dto: ActualizarRutinaDto,
+    @Req() req: PeticionAutenticada,
+  ): Promise<Rutina> {
+    return this.rutinasService.actualizar(id, dto, req.user);
   }
 
-  @Roles(ROL_STAFF)
+  @Roles(ROL_STAFF, ROL_ESTUDIANTE)
   @Delete(":id")
   @HttpCode(HttpStatus.NO_CONTENT)
-  async eliminar(@Param("id") id: string): Promise<void> {
-    await this.rutinasService.eliminar(id);
+  async eliminar(@Param("id") id: string, @Req() req: PeticionAutenticada): Promise<void> {
+    await this.rutinasService.eliminar(id, req.user);
   }
 }

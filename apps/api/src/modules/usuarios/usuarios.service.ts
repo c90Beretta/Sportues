@@ -27,7 +27,12 @@ export class UsuariosService {
         email: dto.email,
         passwordHash: await hash(dto.password, 10),
         rol: dto.rol ?? "ESTUDIANTE",
-        membresiaId: dto.membresiaId ?? null,
+        numeroExpediente: dto.numeroExpediente ?? null,
+        carrera: dto.carrera ?? null,
+        nivelExperiencia: dto.nivelExperiencia ?? null,
+        estadoRegistro: dto.estadoRegistro ?? null,
+        certificadoMedicoUrl: dto.certificadoMedicoUrl ?? null,
+        certificadoVigenteHasta: dto.certificadoVigenteHasta ? new Date(dto.certificadoVigenteHasta) : null,
       },
     });
 
@@ -37,7 +42,6 @@ export class UsuariosService {
   async listar(): Promise<UsuarioSinPassword[]> {
     const usuarios = await this.prisma.usuario.findMany({
       orderBy: { createdAt: "asc" },
-      include: { membresia: true },
     });
     return usuarios.map((u) => this.sinPassword(u));
   }
@@ -59,7 +63,12 @@ export class UsuariosService {
         nombre: dto.nombre,
         email: dto.email,
         rol: dto.rol,
-        membresiaId: dto.membresiaId,
+        numeroExpediente: dto.numeroExpediente,
+        carrera: dto.carrera,
+        nivelExperiencia: dto.nivelExperiencia,
+        estadoRegistro: dto.estadoRegistro,
+        certificadoMedicoUrl: dto.certificadoMedicoUrl,
+        certificadoVigenteHasta: dto.certificadoVigenteHasta ? new Date(dto.certificadoVigenteHasta) : undefined,
         ...(dto.password ? { passwordHash: await hash(dto.password, 10) } : {}),
       },
     });
