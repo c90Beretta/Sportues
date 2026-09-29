@@ -42,16 +42,16 @@ export default async function AsistenciasPage({
             <thead>
               <tr>
                 <th>Estudiante</th>
-                <th>Fecha de visita</th>
-                <th>Hora de registro</th>
+                <th>Entrada</th>
+                <th>Salida</th>
               </tr>
             </thead>
             <tbody>
               {asistencias.map((a) => (
                 <tr key={a.id}>
                   <td><strong>{a.estudiante?.nombre ?? "Sin identificar"}</strong></td>
-                  <td>{new Date(a.fecha).toLocaleString("es")}</td>
-                  <td>{new Date(a.createdAt).toLocaleString("es")}</td>
+                  <td>{new Date(a.horaEntrada).toLocaleString("es")}</td>
+                  <td>{a.horaSalida ? new Date(a.horaSalida).toLocaleString("es") : "En el gimnasio"}</td>
                 </tr>
               ))}
             </tbody>
