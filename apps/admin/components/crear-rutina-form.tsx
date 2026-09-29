@@ -3,19 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { crearRutinaSchema } from "@gimnasio/shared";
-import type { Ejercicio, Usuario } from "@gimnasio/shared";
+import type { Ejercicio } from "@gimnasio/shared";
 
-export function CrearRutinaForm({
-  estudiantes,
-  ejercicios,
-}: {
-  estudiantes: Usuario[];
-  ejercicios: Ejercicio[];
-}) {
+export function CrearRutinaForm({ ejercicios }: { ejercicios: Ejercicio[] }) {
   const router = useRouter();
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [estudianteId, setEstudianteId] = useState("");
+  const [nivel, setNivel] = useState<"PRINCIPIANTE" | "INTERMEDIO" | "AVANZADO">("PRINCIPIANTE");
   const [renglones, setRenglones] = useState<
     { ejercicioId: string; series: number; repeticiones: number; descansoSegundos: number }[]
   >([{ ejercicioId: "", series: 3, repeticiones: 10, descansoSegundos: 60 }]);
@@ -37,7 +31,7 @@ export function CrearRutinaForm({
     const parsed = crearRutinaSchema.safeParse({
       nombre,
       descripcion: descripcion || null,
-      estudianteId,
+      nivel,
       ejercicios: renglones.map((r) => ({
         ...r,
         descansoSegundos: r.descansoSegundos || undefined,
@@ -65,6 +59,7 @@ export function CrearRutinaForm({
 
     setNombre("");
     setDescripcion("");
+    setNivel("PRINCIPIANTE");
     setRenglones([{ ejercicioId: "", series: 3, repeticiones: 10, descansoSegundos: 60 }]);
     router.refresh();
   }
@@ -80,16 +75,15 @@ export function CrearRutinaForm({
         <input value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
       </label>
       <label className="campo">
-        Estudiante
-        <select value={estudianteId} onChange={(e) => setEstudianteId(e.target.value)} required>
-          <option value="">Seleccionar estudiante…</option>
-          {estudiantes
-            .filter((u) => u.rol === "ESTUDIANTE")
-            .map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.nombre} ({u.email})
-              </option>
-            ))}
+        Nivel
+        <select
+          value={nivel}
+          onChange={(e) => setNivel(e.target.value as "PRINCIPIANTE" | "INTERMEDIO" | "AVANZADO")}
+          required
+        >
+          <option value="PRINCIPIANTE">Principiante</option>
+          <option value="INTERMEDIO">Intermedio</option>
+          <option value="AVANZADO">Avanzado</option>
         </select>
       </label>
 
