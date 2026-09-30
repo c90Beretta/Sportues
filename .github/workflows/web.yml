@@ -25,8 +25,11 @@ jobs:
         with:
           node-version: 24
 
-      - name: Install
+            - name: Install
         run: npm ci
+
+      - name: Build shared package
+        run: npm run build --workspace=@gimnasio/shared
 
       - name: Build Astro
         run: npm run build --workspace=web

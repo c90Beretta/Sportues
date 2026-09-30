@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from "class-validator";
+import { IsArray, IsOptional, IsString, IsUUID } from "class-validator";
 
 export class ActualizarEjercicioDto {
   @IsOptional()
@@ -10,6 +10,11 @@ export class ActualizarEjercicioDto {
   descripcion?: string;
 
   @IsOptional()
-  @IsString()
-  grupoMuscular?: string;
+  @IsArray()
+  @IsString({ each: true })
+  gruposMusculares?: string[];
+
+  @IsOptional()
+  @IsUUID()
+  equipoId?: string;
 }

@@ -29,8 +29,13 @@ describe("EjerciciosService", () => {
   });
 
   it("crear() deberia persistir un ejercicio", async () => {
-    const payload = { nombre: "Press banca", descripcion: "Pecho", grupoMuscular: "Pecho" };
-    prisma.ejercicio.create.mockResolvedValue({ id: "e1", ...payload, createdAt: new Date() });
+    const payload = { nombre: "Press banca", descripcion: "Pecho", gruposMusculares: ["Pecho"] };
+    prisma.ejercicio.create.mockResolvedValue({
+      id: "e1",
+      ...payload,
+      equipoId: null,
+      createdAt: new Date(),
+    });
 
     const resultado = await service.crear(payload);
 
@@ -38,7 +43,8 @@ describe("EjerciciosService", () => {
       data: {
         nombre: payload.nombre,
         descripcion: payload.descripcion,
-        grupoMuscular: payload.grupoMuscular,
+        gruposMusculares: payload.gruposMusculares,
+        equipoId: null,
       },
     });
     expect(resultado).toMatchObject({ id: "e1", nombre: "Press banca" });
@@ -46,7 +52,14 @@ describe("EjerciciosService", () => {
 
   it("listar() deberia devolver todos los ejercicios", async () => {
     prisma.ejercicio.findMany.mockResolvedValue([
-      { id: "e1", nombre: "Sentadilla", descripcion: null, grupoMuscular: "Pierna", createdAt: new Date() },
+      {
+        id: "e1",
+        nombre: "Sentadilla",
+        descripcion: null,
+        gruposMusculares: ["Pierna"],
+        equipoId: null,
+        createdAt: new Date(),
+      },
     ]);
 
     const resultado = await service.listar();

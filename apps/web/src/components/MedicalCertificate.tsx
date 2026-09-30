@@ -1,12 +1,12 @@
 interface Props {
-  archivo: string | null;
-  onArchivoChange: (nombre: string | null) => void;
+  archivo: File | null;
+  onArchivoChange: (archivo: File | null) => void;
 }
 
 export default function CertificadoMedico({ archivo, onArchivoChange }: Props) {
   function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    onArchivoChange(file ? file.name : null);
+    onArchivoChange(file ?? null);
   }
 
   return (
@@ -19,6 +19,7 @@ export default function CertificadoMedico({ archivo, onArchivoChange }: Props) {
           <h2 className="font-heading text-headline-sm text-text-primary leading-tight">
             Certificado Médico <span className="text-state-error">*</span>
           </h2>
+          <p className="text-body-sm text-text-muted">Respaldo de aptitud física deportiva</p>
         </div>
       </div>
 
@@ -28,7 +29,7 @@ export default function CertificadoMedico({ archivo, onArchivoChange }: Props) {
           <span className="material-symbols-outlined text-[26px]">upload_file</span>
         </div>
         {archivo ? (
-          <p className="text-label-md font-heading text-state-success">{archivo} · listo</p>
+          <p className="text-label-md font-heading text-state-success">{archivo.name} · listo</p>
         ) : (
           <>
             <p className="text-label-lg font-heading text-text-primary font-bold">Subir certificado médico o constancia de salud</p>
