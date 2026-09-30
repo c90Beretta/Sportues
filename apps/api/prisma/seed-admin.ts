@@ -7,9 +7,11 @@ const ADMIN_NOMBRE = process.env.ADMIN_NOMBRE ?? "Administrador";
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "admin@ues.mx";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "admin123";
 
-const ESTUDIANTE_NOMBRE = process.env.ESTUDIANTE_NOMBRE ?? "Estudiante UES";
-const ESTUDIANTE_EMAIL = process.env.ESTUDIANTE_EMAIL ?? "23020220069@ues.mx";
-const ESTUDIANTE_PASSWORD = process.env.ESTUDIANTE_PASSWORD ?? "12345678";
+// Alumnos de prueba simulados en el padrón de la UES.
+const ALUMNOS_PADRON = [
+  { numeroExpediente: "23020220069", nombre: "José Alberto Noperi Beltrán", carrera: "Lic. en Entrenamiento Deportivo" },
+  { numeroExpediente: "23020220073", nombre: "Isidro Paz Garcia", carrera: "Ing. Software" },
+];
 
 async function main() {
   const adminPasswordHash = await hash(ADMIN_PASSWORD, 10);
@@ -20,22 +22,14 @@ async function main() {
   });
   console.log(`Usuario administrador listo: ${admin.email} (${admin.rol})`);
 
-  const estudiantePasswordHash = await hash(ESTUDIANTE_PASSWORD, 10);
-  const estudiante = await prisma.usuario.upsert({
-    where: { email: ESTUDIANTE_EMAIL },
-    update: { nombre: ESTUDIANTE_NOMBRE, passwordHash: estudiantePasswordHash, rol: "ESTUDIANTE" },
-    create: {
-      nombre: ESTUDIANTE_NOMBRE,
-      email: ESTUDIANTE_EMAIL,
-      passwordHash: estudiantePasswordHash,
-      rol: "ESTUDIANTE",
-      numeroExpediente: "2302022069",
-      carrera: "Lic. en Entrenamiento Deportivo",
-      nivelExperiencia: "INTERMEDIO",
-      estadoRegistro: "APROBADO",
-    },
-  });
-  console.log(`Usuario estudiante listo: ${estudiante.email} (${estudiante.rol})`);
+  for (const alumno of ALUMNOS_PADRON) {
+    await prisma.padronUES.upsert({
+      where: { numeroExpediente: alumno.numeroExpediente },
+      update: {},
+      create: alumno,
+    });
+    console.log(`Registro en PadronUES listo: ${alumno.numeroExpediente} (${alumno.nombre})`);
+  }
 }
 
 main()
