@@ -7,6 +7,8 @@ build/
 .next/
 out/
 .astro/
+dist-esm/
+**/dist-esm/
 coverage/
 
 # Entorno
@@ -24,3 +26,5 @@ npm-debug.log*
 # Sistema
 .DS_Store
 Thumbs.db
+uploads/
+**/uploads/

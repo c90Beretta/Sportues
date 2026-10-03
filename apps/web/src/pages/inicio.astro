@@ -1,19 +1,27 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import InicioIsla from "../components/InicioIsla";
-// import { getSession } from "../lib/auth"; 
+import { getSession } from "../lib/auth";
+import { apiGet } from "../lib/api";
+import type { Usuario } from "@gimnasio/shared";
 
-// 1. Comentamos la seguridad para que no nos expulse al login
-// const sesion = await getSession(Astro.cookies);
-// if (!sesion) {
-//   return Astro.redirect("/login");
-// }
+const sesion = await getSession(Astro.cookies);
+if (!sesion) {
+  return Astro.redirect("/login");
+}
 
-// 2. Creamos una sesión "falsa" estática para hacer pruebas
-const sesion = { usuario: { email: "daniela.rios@ues.mx" } };
-const nombreUsuario = "Daniela";
+let usuario: Usuario;
+try {
+  usuario = await apiGet<Usuario>(`/usuarios/${sesion.usuario.id}`, sesion);
+} catch {
+  return Astro.redirect("/login");
+}
 ---
 
 <Layout title="Inicio · UES FIT" sesion={sesion}>
-  <InicioIsla nombre={nombreUsuario} client:load />
+  <InicioIsla
+    nombre={usuario.nombre.split(" ")[0]}
+    estadoRegistro={usuario.estadoRegistro ?? "PENDIENTE"}
+    client:load
+  />
 </Layout>
