@@ -1,0 +1,31 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CrearCuentaWizard from "../components/CrearCuentaWizard";
+import InstitutionalFooter from "../components/InstitutionalFooter.astro";
+---
+<Layout title="Crear cuenta · UES FIT">
+  <header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+    <div class="h-16 px-4 flex items-center justify-between gap-2 max-w-md mx-auto">
+      <div class="flex items-center gap-2 min-w-0">
+        <a href="/login" aria-label="Regresar" class="w-11 h-11 rounded-full flex items-center justify-center text-primary-container hover:bg-surface-container transition-colors">
+          <span class="material-symbols-outlined text-2xl">arrow_back</span>
+        </a>
+        <img alt="UES FIT" class="h-8 w-auto object-contain" src="/logo-ues-fit.png" />
+      </div>
+      <span class="font-heading text-headline-sm text-on-surface font-bold truncate max-w-[140px]">Crear cuenta</span>
+    </div>
+  </header>
+
+  <div class="pt-20 pb-8 px-4 max-w-md mx-auto">
+    <div class="pb-4">
+      <h1 class="font-heading text-headline-lg-mobile text-text-primary">Verifica tu correo institucional</h1>
+      <p class="text-body-md text-text-muted mt-1">Usamos tu correo @ues.mx para confirmar que eres alumno de la UES antes de crear tu cuenta.</p>
+    </div>
+
+    <div class="bg-surface-container-lowest rounded-2xl shadow-xl p-6">
+      <CrearCuentaWizard client:load />
+    </div>
+
+    <InstitutionalFooter />
+  </div>
+</Layout>

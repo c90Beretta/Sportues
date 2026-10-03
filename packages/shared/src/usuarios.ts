@@ -3,13 +3,27 @@ import { z } from "zod";
 export const rolUsuarioSchema = z.enum(["ESTUDIANTE", "STAFF"]);
 export type RolUsuario = z.infer<typeof rolUsuarioSchema>;
 
+export const nivelExperienciaSchema = z.enum(["PRINCIPIANTE", "INTERMEDIO", "AVANZADO"]);
+export type NivelExperiencia = z.infer<typeof nivelExperienciaSchema>;
+
+export const estadoRegistroSchema = z.enum(["PENDIENTE", "APROBADO", "RECHAZADO"]);
+export type EstadoRegistro = z.infer<typeof estadoRegistroSchema>;
+
 export const usuarioSchema = z.object({
   id: z.string().uuid(),
   nombre: z.string().min(1),
   email: z.string().email(),
   passwordHash: z.string(),
   rol: rolUsuarioSchema,
-  membresiaId: z.string().uuid().nullable(),
+
+  // Only meaningful when rol = "ESTUDIANTE":
+  numeroExpediente: z.string().nullable().optional(),
+  carrera: z.string().nullable().optional(),
+  nivelExperiencia: nivelExperienciaSchema.nullable().optional(),
+  estadoRegistro: estadoRegistroSchema.nullable().optional(),
+  certificadoMedicoUrl: z.string().nullable().optional(),
+  certificadoVigenteHasta: z.coerce.date().nullable().optional(),
+
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });

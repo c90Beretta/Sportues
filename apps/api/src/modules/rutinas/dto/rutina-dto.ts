@@ -1,6 +1,8 @@
 import { Type } from "class-transformer";
 import {
+  ArrayMinSize,
   IsArray,
+  IsIn,
   IsInt,
   IsOptional,
   IsString,
@@ -35,10 +37,17 @@ export class CrearRutinaDto {
   @IsString()
   descripcion?: string;
 
-  @IsUUID()
-  estudianteId!: string;
+  @IsOptional()
+  @IsIn(["PRINCIPIANTE", "INTERMEDIO", "AVANZADO"])
+  nivel?: "PRINCIPIANTE" | "INTERMEDIO" | "AVANZADO";
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  gruposMusculares?: string[];
 
   @IsArray()
+  @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => EjercicioEnRutinaDto)
   ejercicios!: EjercicioEnRutinaDto[];

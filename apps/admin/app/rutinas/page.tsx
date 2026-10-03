@@ -1,21 +1,25 @@
 import { requireSession, apiGet } from "@/lib/api";
-import type { Ejercicio, Rutina, Usuario } from "@gimnasio/shared";
+import type { Ejercicio, Rutina } from "@gimnasio/shared";
 import { CrearRutinaForm } from "@/components/crear-rutina-form";
 
 export const dynamic = "force-dynamic";
+
+const ETIQUETA_NIVEL: Record<string, string> = {
+  PRINCIPIANTE: "Principiante",
+  INTERMEDIO: "Intermedio",
+  AVANZADO: "Avanzado",
+};
 
 export default async function RutinasPage() {
   const sesion = await requireSession();
 
   let rutinas: Rutina[] = [];
-  let estudiantes: Usuario[] = [];
   let ejercicios: Ejercicio[] = [];
   let error: string | null = null;
 
   try {
-    [rutinas, estudiantes, ejercicios] = await Promise.all([
+    [rutinas, ejercicios] = await Promise.all([
       apiGet<Rutina[]>("/rutinas", sesion),
-      apiGet<Usuario[]>("/usuarios", sesion),
       apiGet<Ejercicio[]>("/ejercicios", sesion),
     ]);
   } catch (e) {
@@ -28,9 +32,9 @@ export default async function RutinasPage() {
         <div>
           <p className="eyebrow">Planes de entrenamiento</p>
           <h1>Rutinas</h1>
-          <p>Crea planes personalizados y consulta las rutinas asignadas.</p>
+          <p>Crea y consulta el catálogo oficial de rutinas por nivel.</p>
         </div>
-        <span className="page-count">{rutinas.length} asignadas</span>
+        <span className="page-count">{rutinas.length} en el catálogo</span>
       </header>
 
       {error ? (
@@ -40,18 +44,18 @@ export default async function RutinasPage() {
           <section>
             <div className="section-heading">
               <h2>Nueva rutina</h2>
-              <p>Define el plan y los ejercicios para un estudiante.</p>
+              <p>Define el plan, su nivel y los ejercicios que incluye.</p>
             </div>
-            <CrearRutinaForm estudiantes={estudiantes} ejercicios={ejercicios} />
+            <CrearRutinaForm ejercicios={ejercicios} />
           </section>
 
           <section>
             <div className="section-heading">
-              <h2>Rutinas asignadas</h2>
-              <p>Planes de entrenamiento disponibles actualmente.</p>
+              <h2>Catálogo oficial</h2>
+              <p>Rutinas disponibles actualmente para los alumnos.</p>
             </div>
             {rutinas.length === 0 ? (
-              <p className="empty-message">Todavía no hay rutinas asignadas.</p>
+              <p className="empty-message">Todavía no hay rutinas en el catálogo.</p>
             ) : (
               <ul className="routine-list">
                 {rutinas.map((r) => (
@@ -64,7 +68,8 @@ export default async function RutinasPage() {
                       <span className="badge">{r.ejercicios.length} ejercicios</span>
                     </div>
                     <div className="routine-student">
-                      Estudiante: <strong>{r.estudiante?.nombre ?? r.estudianteId}</strong>
+                      Nivel: <strong>{r.nivel ? ETIQUETA_NIVEL[r.nivel] : "—"}</strong>
+                      {r.creadaPor && <> · Creada por {r.creadaPor.nombre}</>}
                     </div>
                     <ul className="routine-exercises">
                       {r.ejercicios.map((e) => (

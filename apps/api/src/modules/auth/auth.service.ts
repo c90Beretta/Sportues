@@ -27,6 +27,14 @@ export class AuthService {
     );
 
     const { passwordHash: _passwordHash, ...usuarioSinPassword } = usuario;
-    return { accessToken, usuario: { ...usuarioSinPassword, rol: usuario.rol as AutenticacionResponse["usuario"]["rol"] } };
+    return {
+      accessToken,
+      usuario: {
+        ...usuarioSinPassword,
+        rol: usuario.rol as AutenticacionResponse["usuario"]["rol"],
+        nivelExperiencia: usuario.nivelExperiencia as AutenticacionResponse["usuario"]["nivelExperiencia"],
+        estadoRegistro: usuario.estadoRegistro as AutenticacionResponse["usuario"]["estadoRegistro"],
+      },
+    };
   }
 }

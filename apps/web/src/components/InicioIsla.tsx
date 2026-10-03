@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 
 interface Props {
   nombre: string;
+  estadoRegistro: "PENDIENTE" | "APROBADO" | "RECHAZADO";
 }
 
-export default function InicioIsla({ nombre }: Props) {
+export default function InicioIsla({ nombre, estadoRegistro }: Props) {
   const [segundos, setSegundos] = useState(14 * 60 + 28);
   const [girando, setGirando] = useState(false);
 
@@ -131,91 +132,117 @@ export default function InicioIsla({ nombre }: Props) {
         </div>
       </section>
 
-      {/* Pase de Acceso QR */}
-      <section className="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex flex-col items-center gap-3">
-        <div className="w-full flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[22px] text-primary">qr_code_scanner</span>
-            <h2 className="font-headline-sm text-headline-sm text-primary font-bold">Tu Pase de Acceso QR</h2>
+      {/* Pase de Acceso QR — o el aviso de certificado pendiente/rechazado */}
+      {estadoRegistro === "APROBADO" ? (
+        <section className="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex flex-col items-center gap-3">
+          <div className="w-full flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-[22px] text-primary">qr_code_scanner</span>
+              <h2 className="font-headline-sm text-headline-sm text-primary font-bold">Tu Pase de Acceso QR</h2>
+            </div>
+            <div className="bg-surface-container-high px-2.5 py-1 rounded-full flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-state-success" />
+              <span className="font-label-sm text-label-sm font-bold text-primary">Acceso Activo</span>
+            </div>
           </div>
-          <div className="bg-surface-container-high px-2.5 py-1 rounded-full flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-state-success" />
-            <span className="font-label-sm text-label-sm font-bold text-primary">Acceso Activo</span>
+
+          <div className="relative p-3 bg-white rounded-xl shadow-[0_4px_16px_-2px_rgba(63,48,48,0.08)] flex items-center justify-center my-1">
+            <svg className="w-48 h-48" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="12" y="12" width="46" height="46" rx="8" fill="#4E0F16" />
+              <rect x="20" y="20" width="30" height="30" rx="4" fill="#FFFFFF" />
+              <rect x="26" y="26" width="18" height="18" rx="2" fill="#4E0F16" />
+              <rect x="142" y="12" width="46" height="46" rx="8" fill="#4E0F16" />
+              <rect x="150" y="20" width="30" height="30" rx="4" fill="#FFFFFF" />
+              <rect x="156" y="26" width="18" height="18" rx="2" fill="#4E0F16" />
+              <rect x="12" y="142" width="46" height="46" rx="8" fill="#4E0F16" />
+              <rect x="20" y="150" width="30" height="30" rx="4" fill="#FFFFFF" />
+              <rect x="26" y="156" width="18" height="18" rx="2" fill="#4E0F16" />
+              <circle cx="72" cy="20" r="4" fill="#6B252A" /><circle cx="86" cy="20" r="4" fill="#6B252A" />
+              <circle cx="100" cy="20" r="4" fill="#4E0F16" /><circle cx="114" cy="20" r="4" fill="#6B252A" />
+              <circle cx="128" cy="20" r="4" fill="#4E0F16" /><circle cx="72" cy="34" r="4" fill="#4E0F16" />
+              <circle cx="100" cy="34" r="4" fill="#6B252A" /><circle cx="128" cy="34" r="4" fill="#6B252A" />
+              <circle cx="72" cy="48" r="4" fill="#6B252A" /><circle cx="86" cy="48" r="4" fill="#4E0F16" />
+              <circle cx="114" cy="48" r="4" fill="#6B252A" /><circle cx="20" cy="72" r="4" fill="#6B252A" />
+              <circle cx="34" cy="72" r="4" fill="#4E0F16" /><circle cx="48" cy="72" r="4" fill="#6B252A" />
+              <circle cx="72" cy="72" r="4" fill="#4E0F16" /><circle cx="86" cy="72" r="4" fill="#6B252A" />
+              <circle cx="114" cy="72" r="4" fill="#4E0F16" /><circle cx="142" cy="72" r="4" fill="#6B252A" />
+              <circle cx="156" cy="72" r="4" fill="#4E0F16" /><circle cx="170" cy="72" r="4" fill="#6B252A" />
+              <circle cx="20" cy="86" r="4" fill="#4E0F16" /><circle cx="48" cy="86" r="4" fill="#6B252A" />
+              <circle cx="62" cy="86" r="4" fill="#4E0F16" /><circle cx="138" cy="86" r="4" fill="#4E0F16" />
+              <circle cx="166" cy="86" r="4" fill="#6B252A" /><circle cx="180" cy="86" r="4" fill="#4E0F16" />
+              <circle cx="34" cy="100" r="4" fill="#6B252A" /><circle cx="62" cy="100" r="4" fill="#6B252A" />
+              <circle cx="138" cy="100" r="4" fill="#6B252A" /><circle cx="152" cy="100" r="4" fill="#4E0F16" />
+              <circle cx="20" cy="114" r="4" fill="#4E0F16" /><circle cx="48" cy="114" r="4" fill="#6B252A" />
+              <circle cx="62" cy="114" r="4" fill="#4E0F16" /><circle cx="76" cy="114" r="4" fill="#6B252A" />
+              <circle cx="124" cy="114" r="4" fill="#4E0F16" /><circle cx="138" cy="114" r="4" fill="#6B252A" />
+              <circle cx="180" cy="114" r="4" fill="#4E0F16" /><circle cx="20" cy="128" r="4" fill="#6B252A" />
+              <circle cx="34" cy="128" r="4" fill="#4E0F16" /><circle cx="76" cy="128" r="4" fill="#4E0F16" />
+              <circle cx="90" cy="128" r="4" fill="#6B252A" /><circle cx="104" cy="128" r="4" fill="#4E0F16" />
+              <circle cx="118" cy="128" r="4" fill="#6B252A" /><circle cx="146" cy="128" r="4" fill="#4E0F16" />
+              <circle cx="160" cy="128" r="4" fill="#6B252A" /><circle cx="174" cy="128" r="4" fill="#4E0F16" />
+              <circle cx="72" cy="142" r="4" fill="#6B252A" /><circle cx="100" cy="142" r="4" fill="#4E0F16" />
+              <circle cx="114" cy="142" r="4" fill="#6B252A" /><circle cx="142" cy="142" r="4" fill="#4E0F16" />
+              <circle cx="170" cy="142" r="4" fill="#6B252A" /><circle cx="86" cy="156" r="4" fill="#4E0F16" />
+              <circle cx="114" cy="156" r="4" fill="#4E0F16" /><circle cx="128" cy="156" r="4" fill="#6B252A" />
+              <circle cx="156" cy="156" r="4" fill="#4E0F16" /><circle cx="72" cy="170" r="4" fill="#4E0F16" />
+              <circle cx="100" cy="170" r="4" fill="#6B252A" /><circle cx="142" cy="170" r="4" fill="#4E0F16" />
+              <circle cx="170" cy="170" r="4" fill="#6B252A" /><circle cx="86" cy="184" r="4" fill="#6B252A" />
+              <circle cx="114" cy="184" r="4" fill="#4E0F16" /><circle cx="128" cy="184" r="4" fill="#6B252A" />
+              <circle cx="156" cy="184" r="4" fill="#4E0F16" /><circle cx="184" cy="184" r="4" fill="#6B252A" />
+              <rect x="76" y="76" width="48" height="48" rx="10" fill="#FFFFFF" />
+              <rect x="80" y="80" width="40" height="40" rx="8" fill="#4E0F16" />
+              <text x="100" y="104" textAnchor="middle" fontFamily="Montserrat" fontSize="12" fontWeight="800" fill="#FDA540" letterSpacing="1">UES</text>
+            </svg>
           </div>
-        </div>
 
-        <div className="relative p-3 bg-white rounded-xl shadow-[0_4px_16px_-2px_rgba(63,48,48,0.08)] flex items-center justify-center my-1">
-          <svg className="w-48 h-48" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            {/* Esquinas */}
-            <rect x="12" y="12" width="46" height="46" rx="8" fill="#4E0F16" />
-            <rect x="20" y="20" width="30" height="30" rx="4" fill="#FFFFFF" />
-            <rect x="26" y="26" width="18" height="18" rx="2" fill="#4E0F16" />
-            <rect x="142" y="12" width="46" height="46" rx="8" fill="#4E0F16" />
-            <rect x="150" y="20" width="30" height="30" rx="4" fill="#FFFFFF" />
-            <rect x="156" y="26" width="18" height="18" rx="2" fill="#4E0F16" />
-            <rect x="12" y="142" width="46" height="46" rx="8" fill="#4E0F16" />
-            <rect x="20" y="150" width="30" height="30" rx="4" fill="#FFFFFF" />
-            <rect x="26" y="156" width="18" height="18" rx="2" fill="#4E0F16" />
-            {/* Datos QR */}
-            <circle cx="72" cy="20" r="4" fill="#6B252A" /><circle cx="86" cy="20" r="4" fill="#6B252A" />
-            <circle cx="100" cy="20" r="4" fill="#4E0F16" /><circle cx="114" cy="20" r="4" fill="#6B252A" />
-            <circle cx="128" cy="20" r="4" fill="#4E0F16" /><circle cx="72" cy="34" r="4" fill="#4E0F16" />
-            <circle cx="100" cy="34" r="4" fill="#6B252A" /><circle cx="128" cy="34" r="4" fill="#6B252A" />
-            <circle cx="72" cy="48" r="4" fill="#6B252A" /><circle cx="86" cy="48" r="4" fill="#4E0F16" />
-            <circle cx="114" cy="48" r="4" fill="#6B252A" /><circle cx="20" cy="72" r="4" fill="#6B252A" />
-            <circle cx="34" cy="72" r="4" fill="#4E0F16" /><circle cx="48" cy="72" r="4" fill="#6B252A" />
-            <circle cx="72" cy="72" r="4" fill="#4E0F16" /><circle cx="86" cy="72" r="4" fill="#6B252A" />
-            <circle cx="114" cy="72" r="4" fill="#4E0F16" /><circle cx="142" cy="72" r="4" fill="#6B252A" />
-            <circle cx="156" cy="72" r="4" fill="#4E0F16" /><circle cx="170" cy="72" r="4" fill="#6B252A" />
-            <circle cx="20" cy="86" r="4" fill="#4E0F16" /><circle cx="48" cy="86" r="4" fill="#6B252A" />
-            <circle cx="62" cy="86" r="4" fill="#4E0F16" /><circle cx="138" cy="86" r="4" fill="#4E0F16" />
-            <circle cx="166" cy="86" r="4" fill="#6B252A" /><circle cx="180" cy="86" r="4" fill="#4E0F16" />
-            <circle cx="34" cy="100" r="4" fill="#6B252A" /><circle cx="62" cy="100" r="4" fill="#6B252A" />
-            <circle cx="138" cy="100" r="4" fill="#6B252A" /><circle cx="152" cy="100" r="4" fill="#4E0F16" />
-            <circle cx="20" cy="114" r="4" fill="#4E0F16" /><circle cx="48" cy="114" r="4" fill="#6B252A" />
-            <circle cx="62" cy="114" r="4" fill="#4E0F16" /><circle cx="76" cy="114" r="4" fill="#6B252A" />
-            <circle cx="124" cy="114" r="4" fill="#4E0F16" /><circle cx="138" cy="114" r="4" fill="#6B252A" />
-            <circle cx="180" cy="114" r="4" fill="#4E0F16" /><circle cx="20" cy="128" r="4" fill="#6B252A" />
-            <circle cx="34" cy="128" r="4" fill="#4E0F16" /><circle cx="76" cy="128" r="4" fill="#4E0F16" />
-            <circle cx="90" cy="128" r="4" fill="#6B252A" /><circle cx="104" cy="128" r="4" fill="#4E0F16" />
-            <circle cx="118" cy="128" r="4" fill="#6B252A" /><circle cx="146" cy="128" r="4" fill="#4E0F16" />
-            <circle cx="160" cy="128" r="4" fill="#6B252A" /><circle cx="174" cy="128" r="4" fill="#4E0F16" />
-            <circle cx="72" cy="142" r="4" fill="#6B252A" /><circle cx="100" cy="142" r="4" fill="#4E0F16" />
-            <circle cx="114" cy="142" r="4" fill="#6B252A" /><circle cx="142" cy="142" r="4" fill="#4E0F16" />
-            <circle cx="170" cy="142" r="4" fill="#6B252A" /><circle cx="86" cy="156" r="4" fill="#4E0F16" />
-            <circle cx="114" cy="156" r="4" fill="#4E0F16" /><circle cx="128" cy="156" r="4" fill="#6B252A" />
-            <circle cx="156" cy="156" r="4" fill="#4E0F16" /><circle cx="72" cy="170" r="4" fill="#4E0F16" />
-            <circle cx="100" cy="170" r="4" fill="#6B252A" /><circle cx="142" cy="170" r="4" fill="#4E0F16" />
-            <circle cx="170" cy="170" r="4" fill="#6B252A" /><circle cx="86" cy="184" r="4" fill="#6B252A" />
-            <circle cx="114" cy="184" r="4" fill="#4E0F16" /><circle cx="128" cy="184" r="4" fill="#6B252A" />
-            <circle cx="156" cy="184" r="4" fill="#4E0F16" /><circle cx="184" cy="184" r="4" fill="#6B252A" />
-            {/* Logo central */}
-            <rect x="76" y="76" width="48" height="48" rx="10" fill="#FFFFFF" />
-            <rect x="80" y="80" width="40" height="40" rx="8" fill="#4E0F16" />
-            <text x="100" y="104" textAnchor="middle" fontFamily="Montserrat" fontSize="12" fontWeight="800" fill="#FDA540" letterSpacing="1">UES</text>
-          </svg>
-        </div>
-
-        <div className="bg-surface-container px-4 py-2 rounded-full flex items-center gap-1.5 text-on-surface-variant">
-          <span className="material-symbols-outlined text-[18px] text-secondary">meeting_room</span>
-          <p className="font-body-sm text-body-sm font-medium">Presenta este código en el torniquete de entrada</p>
-        </div>
-
-        <div className="w-full flex items-center justify-between pt-1">
-          <div className="flex items-center gap-1.5 text-text-muted">
-            <span className="material-symbols-outlined text-[18px] text-secondary">timer</span>
-            <span className="font-body-sm text-body-sm">Vigencia:</span>
-            <span className="font-label-lg text-label-lg text-primary font-bold">{vigencia}</span>
+          <div className="bg-surface-container px-4 py-2 rounded-full flex items-center gap-1.5 text-on-surface-variant">
+            <span className="material-symbols-outlined text-[18px] text-secondary">meeting_room</span>
+            <p className="font-body-sm text-body-sm font-medium">Presenta este código en el torniquete de entrada</p>
           </div>
-          <button
-            onClick={actualizarQr}
-            className="flex items-center gap-1 py-1.5 px-3 rounded-full bg-surface-container hover:bg-surface-container-high text-primary font-label-sm text-label-sm font-bold transition-all active:scale-95"
-          >
-            <span className={`material-symbols-outlined text-[16px] ${girando ? "animate-spin" : ""}`}>sync</span>
-            <span>Actualizar</span>
-          </button>
-        </div>
-      </section>
+
+          <div className="w-full flex items-center justify-between pt-1">
+            <div className="flex items-center gap-1.5 text-text-muted">
+              <span className="material-symbols-outlined text-[18px] text-secondary">timer</span>
+              <span className="font-body-sm text-body-sm">Vigencia:</span>
+              <span className="font-label-lg text-label-lg text-primary font-bold">{vigencia}</span>
+            </div>
+            <button
+              onClick={actualizarQr}
+              className="flex items-center gap-1 py-1.5 px-3 rounded-full bg-surface-container hover:bg-surface-container-high text-primary font-label-sm text-label-sm font-bold transition-all active:scale-95"
+            >
+              <span className={`material-symbols-outlined text-[16px] ${girando ? "animate-spin" : ""}`}>sync</span>
+              <span>Actualizar</span>
+            </button>
+          </div>
+        </section>
+      ) : (
+        <section className="bg-surface-container-lowest rounded-xl p-6 shadow-sm flex flex-col items-center gap-3 text-center">
+          <div className={`w-14 h-14 rounded-full flex items-center justify-center ${
+            estadoRegistro === "RECHAZADO" ? "bg-state-error/10" : "bg-state-warning/10"
+          }`}>
+            <span className={`material-symbols-outlined text-3xl ${
+              estadoRegistro === "RECHAZADO" ? "text-state-error" : "text-state-warning"
+            }`}>
+              {estadoRegistro === "RECHAZADO" ? "error" : "hourglass_top"}
+            </span>
+          </div>
+          {estadoRegistro === "RECHAZADO" ? (
+            <>
+              <h2 className="font-headline-sm text-headline-sm text-primary font-bold">Certificado no aprobado</h2>
+              <p className="text-body-sm text-text-muted">
+                Tu certificado médico no fue aprobado por el staff. Acude a recepción para más información y para volver a subirlo.
+              </p>
+            </>
+          ) : (
+            <>
+              <h2 className="font-headline-sm text-headline-sm text-primary font-bold">Certificado en revisión</h2>
+              <p className="text-body-sm text-text-muted">
+                Tu pase de acceso QR se activará en cuanto el staff apruebe tu certificado médico. Esto normalmente toma poco tiempo.
+              </p>
+            </>
+          )}
+        </section>
+      )}
 
       {/* CTA: Comenzar Rutina */}
       <section className="relative overflow-hidden rounded-xl p-4 shadow-md" style={{ background: "linear-gradient(to right, #fda540, #8a5100)" }}>
@@ -256,7 +283,6 @@ export default function InicioIsla({ nombre }: Props) {
         </div>
 
         <div className="flex flex-col gap-2.5">
-          {/* Sesión 1 */}
           <div className="flex items-center justify-between p-3 rounded-lg bg-surface-container-low">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary shrink-0">
@@ -278,7 +304,6 @@ export default function InicioIsla({ nombre }: Props) {
             </div>
           </div>
 
-          {/* Sesión 2 */}
           <div className="flex items-center justify-between p-3 rounded-lg bg-surface-container-low">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary shrink-0">

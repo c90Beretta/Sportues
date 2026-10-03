@@ -1,5 +1,9 @@
-import { useState } from "react";
-import { loginSchema } from "@gimnasio/shared";
+import { useCallback, useState } from "react";
+import {
+  loginSchema,
+  type AutenticacionResponse,
+  type Usuario,
+} from "@gimnasio/shared";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -32,7 +36,7 @@ export default function LoginForm() {
       return;
     }
 
-    window.location.href = "/dashboard";
+    window.location.href = "/inicio";
   }
 
   return (
