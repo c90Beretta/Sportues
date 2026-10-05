@@ -1,0 +1,22 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import CrearRutina from "../../components/CrearRutina";
+import { getSession } from "../../lib/auth";
+
+const sesion = await getSession(Astro.cookies);
+if (!sesion) {
+  return Astro.redirect("/login");
+}
+---
+
+<Layout title="Nueva rutina · Gimnasio" sesion={sesion}>
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">Tu entrenamiento ideal</p>
+      <h1>Crear rutina personalizada</h1>
+      <p>Elige los ejercicios, las series y las repeticiones que quieras incluir.</p>
+    </div>
+  </header>
+
+  <CrearRutina client:load />
+</Layout>

@@ -1,0 +1,93 @@
+---
+import type { Rutina } from "@gimnasio/shared";
+
+interface Props {
+  rutina: Rutina;
+  /** Render this card expanded (accordion open) */
+  expandida?: boolean;
+}
+
+const { rutina, expandida = false } = Astro.props;
+
+const NIVELES: Record<string, string | undefined> = {
+  "PRINCIPIANTE": "Principiante",
+  "INTERMEDIO": "Intermedio",
+  "AVANZADO": "Avanzado",
+};
+
+const claseNivel = rutina.nivel
+  ? `nivel-${rutina.nivel.toLowerCase()}`
+  : "nivel-todos";
+const etiquetaNivel = rutina.nivel ? (NIVELES[rutina.nivel] ?? rutina.nivel) : "Todos los niveles";
+const origen = rutina.origen === "PERSONAL" ? "Rutina personal" : "Plan docente";
+const totalEjercicios = rutina.ejercicios.length;
+---
+
+<details class="rutina-card" open={expandida}>
+  <summary class="rutina-card-resumen">
+    <div class="rutina-card-cabecera">
+      <div class="rutina-card-copy">
+        <div class="rutina-card-badges">
+          <span class="nivel-badge {claseNivel}">{etiquetaNivel}</span>
+          <span class="origen-tag">{origen}</span>
+        </div>
+        <h3 class="rutina-card-nombre">{rutina.nombre}</h3>
+        {rutina.descripcion && (
+          <p class="rutina-card-descripcion">{rutina.descripcion}</p>
+        )}
+      </div>
+      <span class="rutina-card-toggle" aria-hidden="true">
+        <span class="material-symbols-outlined">expand_more</span>
+      </span>
+    </div>
+
+    <div class="rutina-card-metricas">
+      <span class="metric-badge">
+        <span class="material-symbols-outlined" aria-hidden="true">fitness_center</span>
+        {totalEjercicios} ejercicios
+      </span>
+      {rutina.gruposMusculares.length > 0 && (
+        <span class="metric-badge">{rutina.gruposMusculares.join(" · ")}</span>
+      )}
+    </div>
+
+    {rutina.creadaPor?.nombre && (
+      <div class="rutina-card-autor">
+        <span class="autor-icono material-symbols-outlined" aria-hidden="true">school</span>
+        <span>{rutina.creadaPor.nombre}</span>
+      </div>
+    )}
+  </summary>
+
+  <div class="rutina-card-contenido">
+    <div class="ejercicios-titulo">
+      <span>Secuencia de ejercicios</span>
+      <span class="ejercicios-sub">{totalEjercicios} en total</span>
+    </div>
+
+    <ol class="ejercicios-lista">
+      {
+        rutina.ejercicios.map((eje) => (
+          <li class="ejercicio-item">
+            <span class="ejercicio-orden">{eje.orden + 1}</span>
+            <div class="ejercicio-info">
+              <strong>{eje.nombre ?? "Ejercicio"}</strong>
+              <span>{eje.series} series × {eje.repeticiones} reps</span>
+            </div>
+            {eje.descansoSegundos !== undefined && (
+              <span class="ejercicio-descanso">
+                <span class="material-symbols-outlined" aria-hidden="true">timer</span>
+                {eje.descansoSegundos}s desc.
+              </span>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+
+    <button class="rutina-cta" type="button">
+      <span class="material-symbols-outlined" aria-hidden="true">play_arrow</span>
+      Comenzar rutina
+    </button>
+  </div>
+</details>

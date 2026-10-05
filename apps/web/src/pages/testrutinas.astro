@@ -1,0 +1,132 @@
+---
+// Dev-only preview page: lets the rutinas UI be verified without the API or
+// a real login. Delete this file once the API key issue is resolved.
+import Layout from "../layouts/Layout.astro";
+import RutinaCard from "../components/RutinaCard.astro";
+import type { Rutina } from "@gimnasio/shared";
+
+const sesionFalsa = { usuario: { email: "prueba@ues.mx" } };
+
+const RUTINAS_MOCK: Rutina[] = [
+  {
+    id: "00000000-0000-4000-8000-000000000001",
+    nombre: "Cuerpo Completo",
+    origen: "OFICIAL",
+    nivel: "PRINCIPIANTE",
+    descripcion: "Plan semanal activo para construir una base sólida.",
+    gruposMusculares: ["Pierna", "Pecho", "Espalda", "Core"],
+    creadaPorId: "00000000-0000-4000-8000-000000000002",
+    creadaPor: {
+      id: "00000000-0000-4000-8000-000000000002",
+      nombre: "Prof. Roberto Salazar",
+      email: "r.salazar@ues.mx",
+    },
+    ejercicios: [
+      { ejercicioId: "00000000-0000-4000-8000-000000000011", orden: 0, series: 4, repeticiones: 12, descansoSegundos: 60, nombre: "Prensa de pierna" },
+      { ejercicioId: "00000000-0000-4000-8000-000000000012", orden: 1, series: 3, repeticiones: 10, descansoSegundos: 90, nombre: "Banco press plano" },
+      { ejercicioId: "00000000-0000-4000-8000-000000000013", orden: 2, series: 3, repeticiones: 12, descansoSegundos: 60, nombre: "Jalón al pecho en polea" },
+    ],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: "00000000-0000-4000-8000-000000000002",
+    nombre: "Fuerza Tren Superior",
+    origen: "OFICIAL",
+    nivel: "INTERMEDIO",
+    descripcion: "Fuerza y definición para el tren superior.",
+    gruposMusculares: ["Hombro", "Tríceps", "Espalda"],
+    creadaPorId: "00000000-0000-4000-8000-000000000002",
+    creadaPor: {
+      id: "00000000-0000-4000-8000-000000000002",
+      nombre: "Prof. Roberto Salazar",
+      email: "r.salazar@ues.mx",
+    },
+    ejercicios: [
+      { ejercicioId: "00000000-0000-4000-8000-000000000021", orden: 0, series: 4, repeticiones: 10, descansoSegundos: 90, nombre: "Press militar con barra" },
+      { ejercicioId: "00000000-0000-4000-8000-000000000022", orden: 1, series: 4, repeticiones: 10, nombre: "Fondos en paralelas" },
+    ],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: "00000000-0000-4000-8000-000000000003",
+    nombre: "Hipertrofia Pierna y Glúteo",
+    origen: "OFICIAL",
+    nivel: "AVANZADO",
+    descripcion: "Alto rendimiento para pierna y glúteo.",
+    gruposMusculares: ["Pierna", "Glúteo"],
+    creadaPorId: "00000000-0000-4000-8000-000000000002",
+    creadaPor: {
+      id: "00000000-0000-4000-8000-000000000002",
+      nombre: "Prof. Roberto Salazar",
+      email: "r.salazar@ues.mx",
+    },
+    ejercicios: [
+      { ejercicioId: "00000000-0000-4000-8000-000000000031", orden: 0, series: 5, repeticiones: 8, descansoSegundos: 120, nombre: "Sentadilla libre profunda" },
+      { ejercicioId: "00000000-0000-4000-8000-000000000032", orden: 1, series: 4, repeticiones: 10, nombre: "Hip thrust con barra" },
+    ],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+];
+
+const NIVELES_VALIDOS = new Set(["PRINCIPIANTE", "INTERMEDIO", "AVANZADO"]);
+const NIVELES = [
+  { valor: "", etiqueta: "Todas" },
+  { valor: "PRINCIPIANTE", etiqueta: "Principiante" },
+  { valor: "INTERMEDIO", etiqueta: "Intermedio" },
+  { valor: "AVANZADO", etiqueta: "Avanzado" },
+] as const;
+
+const pedido = Astro.url.searchParams.get("nivel") ?? "";
+const filtroNivel = NIVELES_VALIDOS.has(pedido) ? pedido : "";
+const rutinas = filtroNivel ? RUTINAS_MOCK.filter((r) => r.nivel === filtroNivel) : RUTINAS_MOCK;
+---
+
+<Layout title="Preview Rutinas · Dev" sesion={sesionFalsa}>
+  <section class="rutinas-hero">
+    <div class="rutinas-hero-eyebrow">
+      <span class="hero-icono material-symbols-outlined" aria-hidden="true">bolt</span>
+      <p class="hero-eyebrow">Planificación académica</p>
+    </div>
+    <h2>Rutinas de entrenamiento</h2>
+    <p>Diseñadas por el equipo docente UES FIT</p>
+  </section>
+
+  <nav class="nivel-filtros" aria-label="Filtrar rutinas por nivel">
+    {
+      NIVELES.map((nivel) => (
+        <a
+          href={nivel.valor ? `?nivel=${nivel.valor}` : "/testrutinas"}
+          class:list={{ activo: filtroNivel === nivel.valor }}
+        >
+          {nivel.etiqueta}
+        </a>
+      ))
+    }
+  </nav>
+
+  <div class="rutinas-lista">
+    {
+      rutinas.map((rutina, indice) => (
+        <RutinaCard rutina={rutina} expandida={indice === 0} />
+      ))
+    }
+  </div>
+
+  <section class="banner-rutina">
+    <div class="banner-rutina-copy">
+      <div class="banner-rutina-icono material-symbols-outlined" aria-hidden="true">design_services</div>
+      <div class="banner-rutina-textos">
+        <span>Tu entrenamiento ideal</span>
+        <h4>Crear rutina personalizada</h4>
+        <p>Selecciona máquinas y repeticiones</p>
+      </div>
+    </div>
+    <a class="banner-rutina-boton" href="/rutinas/nueva">
+      <span>Nueva</span>
+      <span class="material-symbols-outlined" aria-hidden="true">add</span>
+    </a>
+  </section>
+</Layout>
