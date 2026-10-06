@@ -1,6 +1,5 @@
 ---
 import "../styles/global.css";
-
 interface Props {
   title: string;
   sesion?: { usuario: { email: string } } | null;
@@ -12,13 +11,20 @@ const nombreUsuario = sesion?.usuario.email
   .split("@")[0]
   .split(/[._-]/)
   .filter(Boolean)
-  .map((parte) => parte.charAt(0).toUpperCase() + parte.slice(1))
+  .map((parte:any) => parte.charAt(0).toUpperCase() + parte.slice(1))
   .join(" ");
 const inicial = nombreUsuario?.charAt(0) || "U";
 
 const enlaces = [
   { href: "/dashboard", etiqueta: "Mi rutina", icono: "rutina" },
   { href: "/asistencias", etiqueta: "Asistencias", icono: "historial" },
+] as const;
+
+const enlacesMoviles = [
+  { href: "/dashboard", etiqueta: "Inicio", icono: "fitness_center" },
+  { href: "/maquinas", etiqueta: "Máquinas", icono: "sports_gymnastics" },
+  { href: "/rutinas", etiqueta: "Rutinas", icono: "local_fire_department" },
+  { href: "/perfil", etiqueta: "Perfil", icono: "account_circle" },
 ] as const;
 ---
 
@@ -86,32 +92,22 @@ const enlaces = [
           </main>
 
           <nav class="bottom-navigation" aria-label="Navegación móvil">
-            {enlaces.map((enlace) => (
-              <a
-                href={enlace.href}
-                class:list={{ active: rutaActual === enlace.href }}
-                aria-current={rutaActual === enlace.href ? "page" : undefined}
-              >
-                {enlace.icono === "rutina" ? (
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M4 8v8M7 6v12M17 6v12M20 8v8M7 12h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                  </svg>
-                ) : (
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M7 3v3M17 3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                    <path d="m8 15 2 2 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                )}
-                <span>{enlace.etiqueta}</span>
-              </a>
-            ))}
-            <a href="#perfil">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8" />
-                <path d="M4.5 21a7.5 7.5 0 0 1 15 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-              </svg>
-              <span>Perfil</span>
-            </a>
+            {
+              enlacesMoviles.map((enlace) => (
+                <a
+                  href={enlace.href}
+                  class:list={{ active: rutaActual === enlace.href }}
+                  aria-current={rutaActual === enlace.href ? "page" : undefined}
+                >
+                  <span class="bn-icon">
+                    <span class="material-symbols-outlined" aria-hidden="true">
+                      {enlace.icono}
+                    </span>
+                  </span>
+                  <span class="bn-label">{enlace.etiqueta}</span>
+                </a>
+              ))
+            }
           </nav>
         </div>
       ) : (

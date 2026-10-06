@@ -1,0 +1,95 @@
+---
+import Layout from "../layouts/Layout.astro";
+import RutinaCard from "../components/RutinaCard.astro";
+import { getSession } from "../lib/auth";
+import { apiGet } from "../lib/api";
+import type { Rutina } from "@gimnasio/shared";
+
+const sesion = await getSession(Astro.cookies);
+if (!sesion) {
+  return Astro.redirect("/login");
+}
+
+const NIVELES = [
+  { valor: "", etiqueta: "Todas" },
+  { valor: "PRINCIPIANTE", etiqueta: "Principiante" },
+  { valor: "INTERMEDIO", etiqueta: "Intermedio" },
+  { valor: "AVANZADO", etiqueta: "Avanzado" },
+] as const;
+
+const NIVELES_VALIDOS = new Set(["PRINCIPIANTE", "INTERMEDIO", "AVANZADO"]);
+const nivelPedido = Astro.url.searchParams.get("nivel") ?? "";
+const filtroNivel = NIVELES_VALIDOS.has(nivelPedido) ? nivelPedido : "";
+
+let rutinas: Rutina[] = [];
+let error: string | null = null;
+
+try {
+  const query = filtroNivel ? `?nivel=${filtroNivel}` : "";
+  rutinas = await apiGet<Rutina[]>(`/rutinas${query}`, sesion);
+} catch (e) {
+  error = e instanceof Error ? e.message : "No se pudieron cargar las rutinas";
+}
+---
+
+<Layout title="Rutinas · Gimnasio" sesion={sesion}>
+  <section class="rutinas-hero">
+    <div class="rutinas-hero-eyebrow">
+      <span class="hero-icono material-symbols-outlined" aria-hidden="true">bolt</span>
+      <p class="hero-eyebrow">Planificación académica</p>
+    </div>
+    <h2>Rutinas de entrenamiento</h2>
+    <p>Diseñadas por el equipo docente UES FIT</p>
+  </section>
+
+  <nav class="nivel-filtros" aria-label="Filtrar rutinas por nivel">
+    {
+      NIVELES.map((nivel) => (
+        <a
+          href={nivel.valor ? `?nivel=${nivel.valor}` : "/rutinas"}
+          class:list={{ activo: filtroNivel === nivel.valor }}
+          aria-current={filtroNivel === nivel.valor ? "true" : undefined}
+        >
+          {nivel.etiqueta}
+        </a>
+      ))
+    }
+  </nav>
+
+  {
+    error ? (
+      <div class="ues-card error-state">
+        <strong>No se pudieron cargar las rutinas</strong>
+        <p>Verifica que el API esté encendido e inténtalo de nuevo.</p>
+      </div>
+    ) : rutinas.length === 0 ? (
+      <div class="ues-card empty-state">
+        <strong>Sin rutinas por ahora</strong>
+        <p>Todavía no hay rutinas oficiales para este nivel.</p>
+      </div>
+    ) : (
+      <div class="rutinas-lista">
+        {
+          rutinas.map((rutina, indice) => (
+            <RutinaCard rutina={rutina} expandida={indice === 0} />
+          ))
+        }
+      </div>
+    )
+  }
+
+  <section class="banner-rutina">
+    <div class="banner-rutina-copy">
+      <div class="banner-rutina-icono material-symbols-outlined" aria-hidden="true">design_services</div>
+      <div class="banner-rutina-textos">
+        <span>Tu entrenamiento ideal</span>
+        <h4>Crear rutina personalizada</h4>
+        <p>Selecciona máquinas y repeticiones</p>
+      </div>
+    </div>
+    <a class="banner-rutina-boton" href="/rutinas/nueva">
+      <span>Nueva</span>
+      <span class="material-symbols-outlined" aria-hidden="true">add</span>
+    </a>
+  </section>
+</Layout>

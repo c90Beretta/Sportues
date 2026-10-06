@@ -1,0 +1,23 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getSession } from "../lib/auth";
+
+const sesion = await getSession(Astro.cookies);
+if (!sesion) {
+  return Astro.redirect("/login");
+}
+---
+
+<Layout title="Perfil · Gimnasio" sesion={sesion}>
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">Tu cuenta</p>
+      <h1>Perfil</h1>
+      <p>Muy pronto vas a poder editar tus datos personales.</p>
+    </div>
+  </header>
+  <div class="ues-card empty-state">
+    <strong>Sección en construcción</strong>
+    <p>Estamos trabajando en esta vista.</p>
+  </div>
+</Layout>
