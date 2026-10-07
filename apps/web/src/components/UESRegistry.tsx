@@ -3,7 +3,7 @@ import CertificadoMedico from "./MedicalCertificate";
 
 interface Props {
   nombre: string;
-  carrera: string;
+  carrera?: string;
 }
 
 const NIVELES = [
