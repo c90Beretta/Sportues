@@ -10,6 +10,7 @@ import { AsistenciasModule } from "./modules/asistencias/asistencias.module";
 import { JwtAuthGuard } from "./modules/auth/guards/jwt-auth.guard";
 import { RolesGuard } from "./modules/auth/guards/roles.guard";
 import { RegistroModule } from "./modules/registro/registro.module";
+import { EquiposModule } from "./modules/equipos/equipos.module";
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { RegistroModule } from "./modules/registro/registro.module";
     EjerciciosModule,
     AsistenciasModule,
     RegistroModule,
+    EquiposModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
