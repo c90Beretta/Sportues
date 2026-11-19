@@ -5,6 +5,7 @@ import { compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
 import { PrismaService } from "../../prisma/prisma.service";
 import { LoginDto } from "./dto/login.dto";
+import { obtenerJwtSecret } from "./jwt-secret";
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,7 @@ export class AuthService {
 
     const accessToken = sign(
       { sub: usuario.id, id: usuario.id, email: usuario.email, rol: usuario.rol },
-      this.config.get<string>("JWT_SECRET") ?? "dev-secret",
+      obtenerJwtSecret(this.config),
       { expiresIn: "8h" },
     );
 
