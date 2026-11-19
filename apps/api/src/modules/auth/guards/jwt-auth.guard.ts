@@ -10,6 +10,7 @@ import { Request } from "express";
 import { verify } from "jsonwebtoken";
 import { IS_PUBLIC_KEY } from "../decorators/public.decorator";
 import type { UsuarioAuth } from "../interfaces/usuario-auth.interface";
+import { obtenerJwtSecret } from "../jwt-secret";
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -35,8 +36,10 @@ export class JwtAuthGuard implements CanActivate {
       throw new UnauthorizedException("No autenticado");
     }
 
+    const secreto = obtenerJwtSecret(this.config);
+
     try {
-      const payload = verify(token, this.config.get<string>("JWT_SECRET") ?? "dev-secret") as UsuarioAuth;
+      const payload = verify(token, secreto) as UsuarioAuth;
       request.user = payload;
       return true;
     } catch {

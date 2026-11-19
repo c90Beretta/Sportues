@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { jwtVerify } from "jose";
-import { JWT_SECRET } from "./config";
+import { getJwtSecret } from "./config";
 import type { RolUsuario } from "@gimnasio/shared";
 
 export interface SesionAdmin {
@@ -20,8 +20,10 @@ export async function getSession(): Promise<SesionAdmin | null> {
     return null;
   }
 
+  const secreto = new TextEncoder().encode(getJwtSecret());
+
   try {
-    const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
+    const { payload } = await jwtVerify(token, secreto);
     return {
       token,
       usuario: payload as SesionAdmin["usuario"],

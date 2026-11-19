@@ -1,6 +1,6 @@
 import type { AstroCookies } from "astro";
 import { jwtVerify } from "jose";
-import { JWT_SECRET } from "./config";
+import { getJwtSecret } from "./config";
 import type { RolUsuario } from "@gimnasio/shared";
 
 export interface SesionEstudiante {
@@ -21,8 +21,10 @@ export async function getSession(
     return null;
   }
 
+  const secreto = new TextEncoder().encode(getJwtSecret());
+
   try {
-    const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
+    const { payload } = await jwtVerify(token, secreto);
     return {
       token,
       usuario: payload as SesionEstudiante["usuario"],
