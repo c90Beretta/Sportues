@@ -74,9 +74,9 @@ Regla de regresión: todo bug fix añade una prueba que **falla antes del fix y 
 
 Regla anti-debilitamiento: nadie borra, salta (`skip`/`only`/`xit`), debilita ni silencia (`|| true`, `continue-on-error`) una prueba o un check para que CI pase. La revisión comprueba que los gates quedaron **más fuertes, no más débiles**. El piso de pruebas (`scripts/guardrails/test-floor.json`) solo puede subir y se compara contra `main`.
 
-Protección de `main`: requiere PR, 1 aprobación y el check **Verificar monorepo** en verde; sin force-push. Pasos y script en `docs/github-setup.md`.
+Protección pendiente de activar en `main`: requerir PR, 1 aprobación y el check **Verificar monorepo** en verde; sin force-push. Pasos y script en `docs/github-setup.md`.
 
-Why this fits us: Como los tres tocamos tanto frontend como backend en distintos momentos de la semana, estas validaciones automáticas nos protegen de integrar código que no compila o que rompe funcionalidades existentes de otro compañero. Tener los checks en CI y la rama `main` protegida nos ahorra horas de depuración de último minuto antes de las entregas escolares y nos da seguridad al hacer merge.
+Why this fits us: Como los tres tocamos tanto frontend como backend en distintos momentos de la semana, estas validaciones automáticas nos protegen de integrar código que no compila o que rompe funcionalidades existentes de otro compañero. Tener los checks en CI y activar la protección de la rama `main` nos ayudará a evitar horas de depuración de último minuto antes de las entregas escolares y nos dará seguridad al hacer merge.
 
 ## 4. Context (L4)
 
@@ -112,4 +112,4 @@ What worked: [COMPLETAR POR EL EQUIPO — SIN IA]
 
 What didn't: [COMPLETAR POR EL EQUIPO — SIN IA]
 
-The rule we changed (before, after, why): [COMPLETAR POR EL EQUIPO — SIN IA]s
+The rule we changed (before, after, why): [COMPLETAR POR EL EQUIPO — SIN IA]

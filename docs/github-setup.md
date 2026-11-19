@@ -13,17 +13,6 @@ En **Settings → Branches** crea una rule o ruleset para `main` con:
 5. Bloquear force pushes y eliminaciones.
 6. Incluir administradores en la regla.
 
-## Project board
-
-En **Projects**, crea un tablero del repositorio llamado `Sportues — M1` con estas columnas:
-
-- Todo
-- In progress
-- In review
-- Done
-
-Vincula los issues y pull requests al tablero.
-
 ## Proposal e integrantes
 
 1. Crea un issue usando el template **Project Proposal** y pega el contenido de `docs/project-proposal.md`.
