@@ -6,6 +6,13 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     name: Verificar monorepo
@@ -13,6 +20,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -26,8 +35,17 @@ jobs:
       - name: Build shared
         run: npm run build --workspace=@gimnasio/shared
 
-      - name: Test API
+      - name: Test API (backend, Jest)
         run: npm run test --workspace=api
+
+      - name: Test frontend y shared (Vitest)
+        run: npm run test:frontend
+
+      - name: Guardrail - sin checks silenciados ni piso de pruebas debilitado
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: node scripts/guardrails/no-weakened-checks.mjs --base "origin/$BASE_REF"
 
       - name: Build API
         run: npm run build --workspace=api
