@@ -4,6 +4,14 @@ Guía para Claude Code trabajando en el proyecto universitario de **gestión de 
 
 > Nota: el contenido de negocio es el mismo que `AGENTS.md` (usado por otras IAs). Si hay divergencia manda este archivo.
 
+## How this team works
+
+Follow the team agreements in [docs/framework.md](docs/framework.md): issue-first workflow, Definition of Ready/Done, branch and commit conventions, pull requests, quality gates, roles, and agent permissions.
+
+Use [docs/roadmap.md](docs/roadmap.md) as the source of truth for project phases, completed work, and upcoming tasks. Read both documents before starting a task. For architecture, authentication, or database changes, also read the relevant ADRs in docs/adr/.
+
+---
+
 ## Mapa del repositorio
 
 | Ruta                 | Qué es                                                        |

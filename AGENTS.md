@@ -4,6 +4,14 @@ Proyecto universitario de **gestión de gimnasio** (repo `Sportues`). Monorepo d
 
 Este archivo es la fuente de verdad para que cualquier IA (opencode, Claude Code, Cursor, etc.) trabaje en el proyecto. Léelo completo antes de tocar código.
 
+## How this team works
+
+Follow the team agreements in [docs/framework.md](docs/framework.md): issue-first workflow, Definition of Ready/Done, branch and commit conventions, pull requests, quality gates, roles, and agent permissions.
+
+Use [docs/roadmap.md](docs/roadmap.md) as the source of truth for project phases, completed work, and upcoming tasks. Read both documents before starting a task. For architecture, authentication, or database changes, also read the relevant ADRs in docs/adr/.
+
+---
+
 ## Mapa del repositorio
 
 | Ruta                 | Qué es                                                        |
