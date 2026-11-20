@@ -10,9 +10,9 @@ Dejar comandos reutilizables y un rol revisor que evalúe PRs contra la Definiti
 ## Criterios de aceptación
 
 **Criterio 1**
-- **Given** la carpeta `.claude/commands/`
+- **Given** la carpeta `.github/agents/`
 - **When** se lista
-- **Then** hay al menos 2 comandos (`implementar-issue`, `revisar-pr`)
+- **Then** existen los agentes nativos `implementador-issue` y `revisor-pr` con extensión `.agent.md`
 
 **Criterio 2**
 - **Given** se invoca el revisor sobre un PR
