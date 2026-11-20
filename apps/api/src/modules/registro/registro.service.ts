@@ -8,6 +8,7 @@ import { CrearCuentaDto } from "./dto/crear-cuenta.dto";
 import { RestablecerPasswordDto } from "./dto/restablecer-password.dto";
 import { SolicitarCodigoDto } from "./dto/solicitar-codigo.dto";
 import { VerificarCodigoDto } from "./dto/verificar-codigo.dto";
+import { obtenerJwtSecret } from "../auth/jwt-secret";
 
 const VENTANA_VERIFICACION_MINUTOS = 30;
 
@@ -129,7 +130,7 @@ export class RegistroService {
     // Sesión corta, solo para terminar el registro — no es un login real todavía.
     const accessToken = sign(
       { sub: usuario.id, id: usuario.id, email: usuario.email, rol: usuario.rol },
-      this.config.get<string>("JWT_SECRET") ?? "dev-secret",
+      obtenerJwtSecret(this.config),
       { expiresIn: "1h" },
     );
 
