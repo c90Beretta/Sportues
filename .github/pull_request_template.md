@@ -1,20 +1,21 @@
-## Resumen
+Closes #
 
-<!-- Explica qué cambia y por qué. -->
+## What changed
 
-## Evidencia
+## How we verified it
 
-<!-- Incluye capturas, salida de comandos o enlaces relevantes. -->
+- [ ] Tests pass locally and in CI
+- [ ] Acceptance criteria from the issue checked one by one
+- [ ] docs/roadmap.md checkbox ticked (if this finishes a roadmap item)
 
-## Verificación
+## AI log
 
-- [ ] Ejecuté los checks aplicables localmente.
-- [ ] Agregué o actualicé pruebas cuando corresponde.
-- [ ] No incluí secretos, dependencias generadas ni artefactos de build.
-- [ ] Solicité revisión del otro integrante antes de hacer merge.
+Tool and mode (chat / agent):
 
-## Pair programming
+Prompt or command used:
 
-- Driver: @
-- Navigator: @
-- Entrada actualizada en `docs/pair-log.md`: 
+What the AI got wrong:
+
+What we changed:
+
+Outcome (kept as-is / changed / rejected):
