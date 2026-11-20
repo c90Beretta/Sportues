@@ -3,11 +3,12 @@ import os from "node:os";
 import path from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
 import {
-  validarComandoImplementacion,
-  validarComandoRevision,
+  validarAgenteImplementacion,
+  validarAgenteRevision,
+  validarMigracionCopilot,
 } from "../../scripts/guardrails/agent-permissions.mjs";
 
-const temporal = fs.mkdtempSync(path.join(os.tmpdir(), "sportues-agent-permissions-"));
+const temporal = fs.mkdtempSync(path.join(os.tmpdir(), "sportues-copilot-agents-"));
 
 function escribir(nombre, contenido) {
   const ruta = path.join(temporal, nombre);
@@ -17,240 +18,160 @@ function escribir(nombre, contenido) {
 
 afterAll(() => fs.rmSync(temporal, { recursive: true, force: true }));
 
-describe("guardrail: permisos de agentes", () => {
-  it("acepta los comandos reales", () => {
-    expect(validarComandoImplementacion(".claude/commands/implementar-issue.md")).toEqual([]);
-    expect(validarComandoRevision(".claude/commands/revisar-pr.md")).toEqual([]);
+describe("guardrail: agentes nativos de Copilot", () => {
+  it("acepta los agentes y elimina los archivos operativos de Claude", () => {
+    expect(validarMigracionCopilot()).toEqual([]);
+    expect(validarAgenteImplementacion(".github/agents/implementador-issue.agent.md")).toEqual([]);
+    expect(validarAgenteRevision(".github/agents/revisor-pr.agent.md")).toEqual([]);
   });
 
-  it("exige gh issue view en implementación", () => {
-    const ruta = escribir("impl-sin-issue-view.md", `---
+  it("rechaza un implementador sin aprobación humana explícita", () => {
+    const ruta = escribir("implementador-sin-gate.agent.md", `---
+name: implementador-issue
 description: prueba
-allowed-tools: Read, Grep, Glob, Edit, AskUserQuestion, Bash(git status:*), Bash(git diff:*), Bash(npm run test:frontend:*), Bash(npm run test --workspace=api:*), Bash(npm run build:*)
+tools: ["read", "search", "edit", "execute"]
+strict-tools-list: true
+include-custom-instructions: true
 ---
-## Fase 1: planificación obligatoria
-**Puerta humana obligatoria:** aprobación humana explícita que nombre el plan aprobado.
-## Fase 2: implementación solo después de aprobar
+Presenta el plan y continúa automáticamente.
+git status
+git diff
+gh issue view
+npm run test:frontend
+npm run test --workspace=api
+npm run build
 `);
-    expect(validarComandoImplementacion(ruta).some((error) => error.includes("gh issue view"))).toBe(true);
+    expect(validarAgenteImplementacion(ruta).some((error) => error.includes("aprobación humana"))).toBe(true);
   });
 
-  it("exige gh pr view y gh pr diff, y rechaza gh pr comment", () => {
-    const permisos = [
-      "Bash(gh pr view:*)",
-      "Bash(gh pr diff:*)",
-    ];
-
-    for (const permiso of permisos) {
-      const permitido = permisos.filter((actual) => actual !== permiso).join(", ");
-      const ruta = escribir(`review-sin-${permiso.replaceAll(/[^a-z0-9]/gi, "-")}.md`, `---
+  it("rechaza herramientas de implementación fuera del manifiesto", () => {
+    const ruta = escribir("implementador-amplio.agent.md", `---
+name: implementador-issue
 description: prueba
-allowed-tools: Read, Grep, Glob, ${permitido}
+tools: ["read", "search", "edit", "execute", "agent"]
+strict-tools-list: true
+include-custom-instructions: true
 ---
-Deja comentarios generales o sugerencias.
-Está prohibido --edit-last.
-Está prohibido --delete-last.
-Está prohibido --edit.
-Está prohibido --delete.
-Está prohibido --create-if-none.
-Está prohibido --web.
+¿Apruebas este plan antes de implementar?
+Las restricciones estáticas no constituyen una sandbox.
+git status
+git diff
+gh issue view
+npm run test:frontend
+npm run test --workspace=api
+npm run build
 `);
-      expect(validarComandoRevision(ruta).some((error) => error.includes(permiso.includes("view") ? "gh pr view" : "gh pr diff"))).toBe(true);
+    expect(validarAgenteImplementacion(ruta).some((error) => error.includes("manifiesto"))).toBe(true);
+  });
+
+  it("rechaza un revisor con edición o ejecución", () => {
+    for (const herramientas of [
+      '["read", "search", "edit"]',
+      '["read", "search", "execute"]',
+      '["read", "search", "github/*", "*"]',
+    ]) {
+      const ruta = escribir(`revisor-amplio-${herramientas.length}.agent.md`, `---
+name: revisor-pr
+description: prueba
+tools: ${herramientas}
+strict-tools-list: true
+include-custom-instructions: true
+---
+No puedes editar archivos.
+Nunca apruebes ni nunca fusionas.
+gh pr view
+gh pr diff
+Las restricciones estáticas no constituyen una sandbox.
+`);
+      expect(validarAgenteRevision(ruta).length).toBeGreaterThan(0);
     }
-
-    const conComentario = escribir("review-con-gh-pr-comment.md", `---
-description: prueba
-allowed-tools: Read, Grep, Glob, Bash(gh pr view:*), Bash(gh pr diff:*), Bash(gh pr comment:*)
----
-Deja comentarios generales o sugerencias.
-Está prohibido --edit-last.
-Está prohibido --delete-last.
-Está prohibido --edit.
-Está prohibido --delete.
-Está prohibido --create-if-none.
-Está prohibido --web.
-`);
-    expect(validarComandoRevision(conComentario).some((error) => error.includes("gh pr comment"))).toBe(true);
   });
 
-  it("rechaza permisos Bash más amplios de los necesarios", () => {
-    const impl = escribir("impl-bash-amplio.md", `---
-description: prueba
-allowed-tools: Read, Grep, Glob, Edit, AskUserQuestion, Bash(git status:*), Bash(git diff:*), Bash(gh issue view:*), Bash(npm run test:frontend:*), Bash(npm run test --workspace=api:*), Bash(npm run build:*), Bash
----
-## Fase 1: planificación obligatoria
-**Puerta humana obligatoria:** aprobación humana explícita que nombre el plan aprobado.
-## Fase 2: implementación solo después de aprobar
-`);
-    expect(validarComandoImplementacion(impl).some((error) => error.includes("fuera del manifiesto"))).toBe(true);
-
-    const review = escribir("review-gh-amplio.md", `---
-description: prueba
-allowed-tools: Read, Grep, Glob, Bash(gh pr:*), Bash(gh pr comment:*), Bash(gh pr view:*), Bash(gh pr diff:*)
----
-Deja comentarios generales o sugerencias.
-Está prohibido --edit-last.
-Está prohibido --delete-last.
-Está prohibido --edit.
-Está prohibido --delete.
-Está prohibido --create-if-none.
-Está prohibido --web.
-`);
-    expect(validarComandoRevision(review).some((error) => error.includes("fuera del manifiesto"))).toBe(true);
-  });
-
-  it("rechaza una puerta humana que permite continuar automáticamente", () => {
-    const ruta = escribir("implantacion-auto.md", `---
-description: prueba
-allowed-tools: Read
----
-## Fase 1: planificación obligatoria
-**Puerta humana obligatoria:** si no responde, continúa automáticamente.
-## Fase 2: implementación solo después de aprobar
-`);
-    expect(validarComandoImplementacion(ruta).length).toBeGreaterThan(0);
-  });
-
-  it("rechaza mutaciones git", () => {
+  it("rechaza mutaciones Git, PR, REST, GraphQL y intérpretes", () => {
     for (const mutacion of [
-      "git switch feature/x",
-      "git branch feature/x",
-      "git merge main",
       "git commit -m test",
       "git push",
-      "git checkout main",
-      "git rebase main",
-      "git reset --hard main",
-    ]) {
-      const ruta = escribir(`impl-${mutacion.replaceAll(/[^a-z0-9]/gi, "-")}.md`, `---
-description: prueba
-allowed-tools: Read
----
-## Fase 1: planificación obligatoria
-**Puerta humana obligatoria:** aprobación humana explícita que nombre el plan aprobado.
-## Fase 2: implementación solo después de aprobar
-${mutacion}
-`);
-      expect(validarComandoImplementacion(ruta).length).toBeGreaterThan(0);
-    }
-  });
-
-  it("rechaza gh, REST, GraphQL y clientes HTTP", () => {
-    for (const mutacion of [
-      "gh pr merge 10",
+      "git merge main",
+      "gh pr create",
       "gh pr review --approve",
+      "gh pr merge 10",
       "gh api --method POST repos/c90Beretta/Sportues/pulls/10/reviews",
       "gh api graphql -f query='mutation { mergePullRequest }'",
       "curl -X PUT https://api.github.com/repos/c90Beretta/Sportues/pulls/10/merge",
-      "wget --method=POST https://api.github.com/repos/c90Beretta/Sportues/pulls/10/reviews",
+      "node -e 'fetch(\"https://api.github.com/repos/x\")'",
     ]) {
-      const ruta = escribir(`bypass-${mutacion.slice(0, 18).replaceAll(/[^a-z0-9]/gi, "-")}.md`, `---
+      const ruta = escribir(`mutacion-${mutacion.replaceAll(/[^a-z0-9]/gi, "-")}.agent.md`, `---
+name: implementador-issue
 description: prueba
-allowed-tools: Read
+tools: ["read", "search", "edit", "execute"]
+strict-tools-list: true
+include-custom-instructions: true
 ---
-## Fase 1: planificación obligatoria
-**Puerta humana obligatoria:** aprobación humana explícita que nombre el plan aprobado.
-## Fase 2: implementación solo después de aprobar
+¿Apruebas este plan antes de implementar?
+Las restricciones estáticas no constituyen una sandbox.
+git status
+git diff
+gh issue view
+npm run test:frontend
+npm run test --workspace=api
+npm run build
 ${mutacion}
 `);
-      expect(validarComandoImplementacion(ruta).length).toBeGreaterThan(0);
+      expect(validarAgenteImplementacion(ruta).length).toBeGreaterThan(0);
     }
   });
 
-  it("rechaza expansiones shell, intérpretes y encadenamiento", () => {
+  it("rechaza cadenas, sustitución, alias y wrappers", () => {
     for (const bypass of [
-      "bash -c 'git push'",
-      "node -e 'fetch(\"https://api.github.com/repos/x\")'",
-      "python -c 'import requests'",
       "git status && git push",
-      "gh pr comment 10 --body `echo hack`",
-      "gh pr comment 10 --body $(printf hack)",
+      "gh pr diff 10 --body $(printf hack)",
+      "gh pr diff 10 --body `echo hack`",
+      "bash -c 'git push'",
       "env gh pr merge 10",
       "sudo gh pr review --approve",
-      "alias gh='gh -R c90Beretta/Sportues'",
+      "alias gh='gh pr merge'",
       "source ./mutate.sh",
-      "printf 'gh pr merge 10' | bash",
+      "printf 'git push' | bash",
       "xargs gh pr merge",
     ]) {
-      const ruta = escribir(`shell-${Math.random()}.md`, `---
+      const ruta = escribir(`bypass-${Math.random()}.agent.md`, `---
+name: implementador-issue
 description: prueba
-allowed-tools: Read
+tools: ["read", "search", "edit", "execute"]
+strict-tools-list: true
+include-custom-instructions: true
 ---
-## Fase 1: planificación obligatoria
-**Puerta humana obligatoria:** aprobación humana explícita que nombre el plan aprobado.
-## Fase 2: implementación solo después de aprobar
+¿Apruebas este plan antes de implementar?
+Las restricciones estáticas no constituyen una sandbox.
+git status
+git diff
+gh issue view
+npm run test:frontend
+npm run test --workspace=api
+npm run build
 ${bypass}
 `);
-      expect(validarComandoImplementacion(ruta).length).toBeGreaterThan(0);
+      expect(validarAgenteImplementacion(ruta).length).toBeGreaterThan(0);
     }
   });
 
-  it("rechaza edición, borrado y formal review en el revisor", () => {
-    for (const opcion of [
-      "--edit-last",
-      "--delete-last",
-      "--edit",
-      "--delete",
-      "--create-if-none",
-      "--web",
-    ]) {
-      const ruta = escribir(`review-${opcion.slice(2)}.md`, `---
+  it("rechaza que el revisor publique o modifique comentarios", () => {
+    for (const opcion of ["--edit-last", "--delete-last", "--edit", "--delete", "--create-if-none", "--web"]) {
+      const ruta = escribir(`revisor-comentario-${opcion.slice(2)}.agent.md`, `---
+name: revisor-pr
 description: prueba
-allowed-tools: Read, Grep, Glob, Bash(gh pr comment:*)
+tools: ["read", "search", "github/*"]
+strict-tools-list: true
+include-custom-instructions: true
 ---
-Deja comentarios generales o sugerencias.
-Está prohibido ${opcion}.
-gh pr comment 10 --body nuevo ${opcion}
+No puedes editar archivos.
+Nunca apruebes ni nunca fusionas.
+gh pr view
+gh pr diff
+Las restricciones estáticas no constituyen una sandbox.
+gh pr comment 10 ${opcion}
 `);
-      expect(validarComandoRevision(ruta).length).toBeGreaterThan(0);
+      expect(validarAgenteRevision(ruta).length).toBeGreaterThan(0);
     }
-
-    for (const mutacion of [
-      "gh pr review --approve",
-      "gh pr review --request-changes",
-      "gh pr merge 10",
-      "gh api --method POST repos/c90Beretta/Sportues/pulls/10/reviews",
-    ]) {
-      const ruta = escribir(`review-${mutacion.replaceAll(/[^a-z0-9]/gi, "-")}.md`, `---
-description: prueba
-allowed-tools: Read, Grep, Glob
----
-Deja comentarios generales o sugerencias.
-Está prohibido --edit-last.
-Está prohibido --delete-last.
-Está prohibido --edit.
-Está prohibido --delete.
-Está prohibido --create-if-none.
-Está prohibido --web.
-${mutacion}
-`);
-      expect(validarComandoRevision(ruta).length).toBeGreaterThan(0);
-    }
-  });
-
-  it("rechaza herramientas fuera del manifiesto", () => {
-    const impl = escribir("impl-bash.md", `---
-description: prueba
-allowed-tools: Read, Bash
----
-## Fase 1: planificación obligatoria
-**Puerta humana obligatoria:** aprobación humana explícita que nombre el plan aprobado.
-## Fase 2: implementación solo después de aprobar
-`);
-    expect(validarComandoImplementacion(impl).length).toBeGreaterThan(0);
-
-    const review = escribir("review-edit.md", `---
-description: prueba
-allowed-tools: Read, Edit
----
-Deja comentarios generales o sugerencias.
-Está prohibido --edit-last.
-Está prohibido --delete-last.
-Está prohibido --edit.
-Está prohibido --delete.
-Está prohibido --create-if-none.
-Está prohibido --web.
-`);
-    expect(validarComandoRevision(review).length).toBeGreaterThan(0);
   });
 });

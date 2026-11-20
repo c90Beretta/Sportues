@@ -3,11 +3,11 @@ import { parse } from "yaml";
 
 const RUTA_MANIFEST = ".github/agent-permissions.json";
 
-function cargarManifest() {
+export function cargarManifestAgentes() {
   return JSON.parse(fs.readFileSync(RUTA_MANIFEST, "utf8"));
 }
 
-export function analizarComandoAgente(ruta) {
+export function analizarAgente(ruta) {
   const contenido = fs.readFileSync(ruta, "utf8");
   const coincidencia = contenido.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? "";
   let metadata = {};
@@ -17,40 +17,23 @@ export function analizarComandoAgente(ruta) {
     metadata = {};
   }
 
-  const herramientas = typeof metadata["allowed-tools"] === "string"
-    ? metadata["allowed-tools"].split(",").map((herramienta) => herramienta.trim()).filter(Boolean)
-    : [];
+  const herramientas = typeof metadata.tools === "string"
+    ? metadata.tools.split(",").map((herramienta) => herramienta.trim()).filter(Boolean)
+    : Array.isArray(metadata.tools)
+      ? metadata.tools
+      : [];
 
   return {
     contenido,
-    descripcion: typeof metadata.description === "string" ? metadata.description : "",
+    metadata,
     herramientas,
   };
 }
 
-function esLineaEjecutable(linea) {
-  const limpia = linea.trim().replace(/^[-+]\s*/, "");
-  if (/^(?:Nunca|No |Está prohibido|prohibido|No hagas|Después de|Detente|Trabaja|Presenta|Usa)/i.test(limpia)) {
-    return false;
-  }
-  if (/^(?:Ejecuta|ejecuta)\s*:/i.test(limpia)) return true;
-  return /^(?:git|gh|curl|wget|bash|sh|zsh|node|python|python3|ruby|perl|php|npx|npm\s+exec|env|command|alias|source|\.\s|sudo|doas|xargs)\b/i.test(limpia);
-}
-
-function contieneExpansionShell(contenido) {
-  return contenido.split("\n").some((linea) => {
-    const ejecutable = esLineaEjecutable(linea);
-    if (!ejecutable && !/\$\(|\$\{/.test(linea)) {
-      return false;
-    }
-    return /(?:&&|\|\||;|\||`|\$\(|\$\{|<\(|>\(|\\\n)/.test(linea);
-  });
-}
-
-function contieneMutacionEjecutable(contenido) {
+function contieneOperacionMutativa(contenido) {
   const prohibidas = [
     /\bgit\s+(?:add|commit|push|merge|switch|checkout|branch|rebase|reset|cherry-pick)\b/i,
-    /\bgh\s+(?:pr\s+(?:create|review|merge)|api|repo|release)\b/i,
+    /\bgh\s+(?:pr\s+(?:create|review|merge|close)|api|repo|release)\b/i,
     /\bgh\s+pr\s+comment\b/i,
     /\b(?:curl|wget)\b/i,
     /\b(?:bash|sh|zsh|node|python|python3|ruby|perl|php|npx|npm\s+exec)\b/i,
@@ -58,104 +41,132 @@ function contieneMutacionEjecutable(contenido) {
     /(?:pulls\/[^/\s]+\/(?:merge|reviews)|repos\/[^/\s]+\/[^/\s]+\/discussions)/i,
     /(?:--approve|--request-changes|--merge|APPROVE|REQUEST_CHANGES)/i,
     /\b(?:alias|source|eval)\b/i,
-    /\b(?:env|sudo|doas|xargs)\b.*\b(?:git|gh|curl|wget|node|python|bash|sh)\b/i,
   ];
 
-  return contenido.split("\n").some((linea) =>
-    esLineaEjecutable(linea) &&
-    !/^(?:##|#|\s*\*)/.test(linea.trim()) &&
-    prohibidas.some((patron) => patron.test(linea)),
-  );
+  return contenido.split("\n").some((linea) => {
+    const ejecutable = /^(?:git|gh|curl|wget|bash|sh|zsh|node|python|python3|ruby|perl|php|npx|npm\s+exec|env|command|alias|source|sudo|doas|xargs)\b/i.test(linea.trim());
+    return ejecutable && prohibidas.some((patron) => patron.test(linea));
+  });
 }
 
-export function validarComandoImplementacion(ruta) {
-  const { contenido, herramientas } = analizarComandoAgente(ruta);
-  const manifest = cargarManifest();
-  const errores = [];
-  const plan = contenido.search(/^## Fase 1: planificación obligatoria$/m);
-  const gate = contenido.search(/PUERTA HUMANA OBLIGATORIA:/i);
-  const implementacion = contenido.search(/^## Fase 2: implementación solo después de aprobar$/m);
+function contieneExpansionShell(contenido) {
+  return contenido.split("\n").some((linea) => {
+    const ejecutable = /^(?:git|gh|curl|wget|bash|sh|zsh|node|python|python3|ruby|perl|php|npx|npm\s+exec|env|command|alias|source|sudo|doas|xargs)\b/i.test(linea.trim());
+    if (!ejecutable) return false;
+    return linea.includes("&&") ||
+      linea.includes("||") ||
+      linea.includes(";") ||
+      linea.includes("|") ||
+      linea.includes("`") ||
+      linea.includes("$(") ||
+      linea.includes("${") ||
+      linea.includes("<(") ||
+      linea.includes(">(");
+  });
+}
 
-  if (plan < 0 || gate < 0 || implementacion < 0 || !(plan < gate && gate < implementacion)) {
-    errores.push("El plan debe preceder a una puerta humana explícita y a la implementación.");
+export function validarAgenteImplementacion(ruta) {
+  const manifest = cargarManifestAgentes();
+  const { contenido, metadata, herramientas } = analizarAgente(ruta);
+  const errores = [];
+
+  if (typeof metadata.name !== "string" || metadata.name !== "implementador-issue") {
+    errores.push("El agente debe tener name: implementador-issue.");
   }
-  if (!/aprobación humana explícita|nombre el plan aprobado|no hay una respuesta explícita/i.test(contenido)) {
-    errores.push("La puerta humana no exige aprobación explícita del plan mostrado.");
+  if (metadata["strict-tools-list"] !== true) {
+    errores.push("El agente debe declarar strict-tools-list: true.");
+  }
+  if (metadata["include-custom-instructions"] !== true) {
+    errores.push("El agente debe declarar include-custom-instructions: true.");
+  }
+  if (herramientas.join("|") !== manifest.implementation.allowedTools.join("|")) {
+    errores.push("Las herramientas del implementador no coinciden exactamente con el manifiesto.");
+  }
+  if (!herramientas.includes("execute")) {
+    errores.push("El implementador debe declarar execute para pruebas y lecturas locales.");
+  }
+  if (!/aprobación humana explícita|¿Apruebas este plan antes de implementar\?/i.test(contenido)) {
+    errores.push("El implementador no exige aprobación humana explícita del plan.");
+  }
+  if (!/Nunca crees, apruebes, cierres o fusiones un PR|Nunca uses `git add`/i.test(contenido)) {
+    errores.push("El implementador no declara los límites mutativos obligatorios.");
   }
   if (contieneExpansionShell(contenido)) {
-    errores.push("El comando contiene constructos de expansión de shell.");
+    errores.push("El agente contiene constructos de expansión de shell.");
   }
-  if (contieneMutacionEjecutable(contenido)) {
-    errores.push("El comando contiene una operación Git, GitHub o intérprete prohibida.");
+  if (contieneOperacionMutativa(contenido)) {
+    errores.push("El agente contiene una operación Git, GitHub, HTTP o intérprete prohibida.");
+  }
+  for (const operacion of manifest.implementation.allowedShellCommands) {
+    if (!contenido.includes(operacion)) {
+      errores.push(`Falta la operación Shell permitida: ${operacion}.`);
+    }
+  }
+  if (!/restricciones estáticas|no constituyen una sandbox|guardrails/i.test(contenido)) {
+    errores.push("El agente debe declarar honestamente que las restricciones no son una sandbox.");
   }
 
-  const permitidas = new Set([
-    ...manifest.implementation.allowedTools,
-    ...manifest.implementation.allowedBash,
-  ]);
-  if (herramientas.some((herramienta) => !permitidas.has(herramienta))) {
-    errores.push("El frontmatter contiene herramientas fuera del manifiesto de implementación.");
+  return errores;
+}
+
+export function validarAgenteRevision(ruta) {
+  const manifest = cargarManifestAgentes();
+  const { contenido, metadata, herramientas } = analizarAgente(ruta);
+  const errores = [];
+
+  if (typeof metadata.name !== "string" || metadata.name !== "revisor-pr") {
+    errores.push("El agente debe tener name: revisor-pr.");
   }
-  if (herramientas.some((herramienta) =>
-    /^Bash\((?:git (?:add|commit|push|merge|switch|checkout|branch|rebase|reset)|gh (?:pr (?:create|review|merge)|api)|curl |wget |bash |sh |zsh |node |python|ruby |npx )/i.test(herramienta),
-  )) {
-    errores.push("El Bash de implementación incluye una operación prohibida.");
+  if (metadata["strict-tools-list"] !== true) {
+    errores.push("El revisor debe declarar strict-tools-list: true.");
   }
-  for (const permiso of manifest.implementation.allowedBash) {
-    if (!herramientas.includes(permiso)) {
-      errores.push(`Falta el permiso Bash requerido: ${permiso}.`);
+  if (metadata["include-custom-instructions"] !== true) {
+    errores.push("El revisor debe declarar include-custom-instructions: true.");
+  }
+  if (herramientas.join("|") !== manifest.review.allowedTools.join("|")) {
+    errores.push("Las herramientas del revisor no coinciden exactamente con el manifiesto.");
+  }
+  if (herramientas.some((herramienta) => ["edit", "execute", "write"].includes(herramienta))) {
+    errores.push("El revisor no puede tener herramientas de edición o ejecución.");
+  }
+  if (!/aprobar|aprueba|aprobación|nunca apruebes|no apruebes/i.test(contenido)) {
+    errores.push("El revisor debe prohibir aprobación automática.");
+  }
+  if (!/fusionar|fusiones|merge|fusión/i.test(contenido)) {
+    errores.push("El revisor debe prohibir merge.");
+  }
+  if (!/No puedes editar archivos|No puedes publicar comentarios|No puedes/i.test(contenido)) {
+    errores.push("El revisor debe declararse solo lectura y sin publicación.");
+  }
+  if (!/restricciones estáticas|no constituyen una sandbox/i.test(contenido)) {
+    errores.push("El revisor debe declarar honestamente la limitación estática.");
+  }
+  if (contieneExpansionShell(contenido) || contieneOperacionMutativa(contenido)) {
+    errores.push("El revisor contiene una operación de ejecución o GitHub mutativa.");
+  }
+  for (const operacion of manifest.review.allowedShellCommands) {
+    if (!contenido.includes(operacion)) {
+      errores.push(`Falta la operación Shell de lectura requerida: ${operacion}.`);
     }
   }
 
   return errores;
 }
 
-export function validarComandoRevision(ruta) {
-  const { contenido, herramientas } = analizarComandoAgente(ruta);
-  const manifest = cargarManifest();
+export function validarMigracionCopilot() {
   const errores = [];
+  const agentes = [
+    ".github/agents/implementador-issue.agent.md",
+    ".github/agents/revisor-pr.agent.md",
+  ];
 
-  if (herramientas.some((herramienta) => /^(?:Write|Edit)$/.test(herramienta))) {
-    errores.push("El revisor no debe tener herramientas de escritura.");
+  for (const ruta of agentes) {
+    if (!fs.existsSync(ruta)) errores.push(`Falta el agente nativo: ${ruta}.`);
   }
-  if (!/comentarios generales o sugerencias/i.test(contenido)) {
-    errores.push("El revisor debe limitar su salida a comentarios o sugerencias nuevos.");
-  }
-
-  for (const opcion of manifest.review.forbiddenCommentOptions) {
-    if (!contenido.includes(opcion)) {
-      errores.push(`El revisor no declara prohibida la opción ${opcion}.`);
-    }
-  }
-
-  if (contieneExpansionShell(contenido)) {
-    errores.push("El revisor contiene constructos de expansión de shell.");
-  }
-  if (contieneMutacionEjecutable(contenido)) {
-    errores.push("El revisor contiene una operación Git, GitHub, HTTP o intérprete prohibida.");
-  }
-
-  const permitidas = new Set([
-    ...manifest.review.allowedTools,
-    ...manifest.review.allowedBash,
-  ]);
-  if (herramientas.some((herramienta) => !permitidas.has(herramienta))) {
-    errores.push("El frontmatter contiene herramientas fuera del manifiesto de revisión.");
-  }
-  for (const permiso of manifest.review.allowedBash) {
-    if (!herramientas.includes(permiso)) {
-      errores.push(`Falta el permiso Bash requerido: ${permiso}.`);
-    }
-  }
-  if (herramientas.some((herramienta) => /^Bash\(gh pr comment/i.test(herramienta))) {
-    errores.push("El revisor no debe recibir permiso para gh pr comment; los comentarios se publican manualmente.");
-  }
-
-  for (const opcion of ["--edit-last", "--delete-last", "--edit", "--delete", "--create-if-none", "--web"]) {
-    const coincidencia = new RegExp(`gh\\s+pr\\s+comment[^\\n]*${opcion.replace("-", "\\-")}`, "i");
-    if (coincidencia.test(contenido)) {
-      errores.push(`El revisor intenta usar la opción prohibida ${opcion}.`);
-    }
+  if (fs.existsSync(".claude/commands/implementar-issue.md") ||
+      fs.existsSync(".claude/commands/revisar-pr.md") ||
+      fs.existsSync(".claude/agents/reviewer.md")) {
+    errores.push("Todavía existen archivos operativos de Claude para la tarea #10.");
   }
 
   return errores;

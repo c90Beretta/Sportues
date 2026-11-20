@@ -87,16 +87,16 @@ Why this fits us: Como los tres tocamos tanto frontend como backend en distintos
 
 ## 5. Agents (L5)
 
-Comandos y roles reutilizables (`.claude/`):
-- `/implementar-issue <n>`: lleva un issue a PR siguiendo este documento (plan → aprobación → pruebas primero → código → PR con AI log). **No hace merge.**
-- `/revisar-pr <n>`: ejecuta el rol revisor.
-- Agente `revisor-pr`: revisa un PR contra la Definition of Done. Solo lectura. **Sus comentarios son sugerencias, nunca aprobación.**
-- Agentes previos (`orquestador`, `implementador`, `tester`, `reviewer`): su veredicto `APPROVED` es una señal interna del bucle del agente y **no** equivale a aprobar el PR en GitHub.
+Agentes reutilizables nativos de GitHub Copilot CLI (`.github/agents/`):
+- `implementador-issue.agent.md`: lleva un issue a cambios locales siguiendo este documento (plan → aprobación humana → pruebas primero → código → evidencia). **No hace commit, push, PR ni merge.**
+- `revisor-pr.agent.md`: revisa un PR contra la Definition of Done solo de forma consultiva. **Sus comentarios y veredictos son sugerencias, nunca aprobación.**
 
-GitHub Copilot CLI puede usar `.github/copilot-instructions.md` y los mismos límites documentados arriba. El comando de implementación debe mostrar su plan y esperar aprobación humana explícita antes de editar; el rol revisor puede comentar como asesoría, pero nunca aprobar ni mergear.
+GitHub Copilot CLI usa `.github/copilot-instructions.md` y `.github/agent-permissions.json` como instrucciones y guardrails. El agente de implementación debe mostrar el plan y esperar aprobación humana explícita antes de editar; el agente revisor solo consulta PR/diff y entrega hallazgos humanos.
 
-Un agente puede: leer el repo, editar archivos en su rama, ejecutar pruebas y lint, abrir un PR en borrador.
-Un agente no puede: mergear, aprobar PRs, modificar ramas protegidas, instalar dependencias sin que una persona las revise, tocar `.env*` ni pegar secretos en prompts, ni borrar/saltar/debilitar pruebas.
+Las restricciones estáticas no constituyen una sandbox ni garantizan bloquear todos los comandos alternativos. La autorización humana, las herramientas mínimas y la protección de `main` siguen siendo necesarias.
+
+Un agente puede: leer el repo, editar archivos en su rama y ejecutar pruebas y lint.
+Un agente no puede: crear o fusionar PRs, aprobar PRs, cerrar issues, modificar ramas protegidas, instalar dependencias sin que una persona las revise, tocar `.env*` ni pegar secretos en prompts, ni borrar/saltar/debilitar pruebas.
 
 Seguridad: el texto de issues, páginas web o archivos puede contener instrucciones ocultas (prompt injection); los agentes trabajan con permisos mínimos. Los agentes inventan nombres de paquetes: **cada dependencia nueva la verifica una persona** (existe, mantenimiento, nombre exacto) antes de aceptarla.
 

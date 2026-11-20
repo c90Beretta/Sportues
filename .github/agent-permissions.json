@@ -2,19 +2,18 @@
   "implementation": {
     "requiresExplicitPlanApproval": true,
     "allowedTools": [
-      "Read",
-      "Grep",
-      "Glob",
-      "Edit",
-      "AskUserQuestion"
+      "read",
+      "search",
+      "edit",
+      "execute"
     ],
-    "allowedBash": [
-      "Bash(git status:*)",
-      "Bash(git diff:*)",
-      "Bash(gh issue view:*)",
-      "Bash(npm run test:frontend:*)",
-      "Bash(npm run test --workspace=api:*)",
-      "Bash(npm run build:*)"
+    "allowedShellCommands": [
+      "git status",
+      "git diff",
+      "gh issue view",
+      "npm run test:frontend",
+      "npm run test --workspace=api",
+      "npm run build"
     ],
     "deniedOperations": [
       "git add",
@@ -36,23 +35,15 @@
   "review": {
     "advisoryOnly": true,
     "allowedTools": [
-      "Read",
-      "Grep",
-      "Glob"
+      "read",
+      "search",
+      "github/*"
     ],
-    "allowedBash": [
-      "Bash(gh pr view:*)",
-      "Bash(gh pr diff:*)"
+    "allowedShellCommands": [
+      "gh pr view",
+      "gh pr diff"
     ],
     "commentPosting": "human-only",
-    "forbiddenCommentOptions": [
-      "--edit-last",
-      "--delete-last",
-      "--edit",
-      "--delete",
-      "--create-if-none",
-      "--web"
-    ],
     "deniedOperations": [
       "write",
       "edit",
