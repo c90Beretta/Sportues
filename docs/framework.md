@@ -93,6 +93,8 @@ Comandos y roles reutilizables (`.claude/`):
 - Agente `revisor-pr`: revisa un PR contra la Definition of Done. Solo lectura. **Sus comentarios son sugerencias, nunca aprobación.**
 - Agentes previos (`orquestador`, `implementador`, `tester`, `reviewer`): su veredicto `APPROVED` es una señal interna del bucle del agente y **no** equivale a aprobar el PR en GitHub.
 
+GitHub Copilot CLI puede usar `.github/copilot-instructions.md` y los mismos límites documentados arriba. El comando de implementación debe mostrar su plan y esperar aprobación humana explícita antes de editar; el rol revisor puede comentar como asesoría, pero nunca aprobar ni mergear.
+
 Un agente puede: leer el repo, editar archivos en su rama, ejecutar pruebas y lint, abrir un PR en borrador.
 Un agente no puede: mergear, aprobar PRs, modificar ramas protegidas, instalar dependencias sin que una persona las revise, tocar `.env*` ni pegar secretos en prompts, ni borrar/saltar/debilitar pruebas.
 

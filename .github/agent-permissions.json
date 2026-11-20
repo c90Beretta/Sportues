@@ -1,0 +1,68 @@
+{
+  "implementation": {
+    "requiresExplicitPlanApproval": true,
+    "allowedTools": [
+      "Read",
+      "Grep",
+      "Glob",
+      "Edit",
+      "AskUserQuestion"
+    ],
+    "allowedBash": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(gh issue view:*)",
+      "Bash(npm run test:frontend:*)",
+      "Bash(npm run test --workspace=api:*)",
+      "Bash(npm run build:*)"
+    ],
+    "deniedOperations": [
+      "git add",
+      "git commit",
+      "git push",
+      "git merge",
+      "git switch",
+      "git checkout",
+      "git branch",
+      "git rebase",
+      "git reset",
+      "gh pr create",
+      "gh pr review",
+      "gh pr merge",
+      "gh api",
+      "graphql mutation"
+    ]
+  },
+  "review": {
+    "advisoryOnly": true,
+    "allowedTools": [
+      "Read",
+      "Grep",
+      "Glob"
+    ],
+    "allowedBash": [
+      "Bash(gh pr view:*)",
+      "Bash(gh pr diff:*)"
+    ],
+    "commentPosting": "human-only",
+    "forbiddenCommentOptions": [
+      "--edit-last",
+      "--delete-last",
+      "--edit",
+      "--delete",
+      "--create-if-none",
+      "--web"
+    ],
+    "deniedOperations": [
+      "write",
+      "edit",
+      "git",
+      "gh pr review",
+      "gh pr merge",
+      "gh api",
+      "graphql mutation",
+      "curl",
+      "wget"
+    ]
+  }
+}
