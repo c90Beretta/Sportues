@@ -1,6 +1,6 @@
-# GitHub Copilot CLI — límites del equipo Sportues
+# GitHub Copilot — límites del equipo Sportues
 
-GitHub Copilot CLI es la única herramienta de automatización del equipo para implementación y revisión.
+El equipo comparte agentes personalizados para trabajar con GitHub Copilot Chat en VS Code. Para instalarlo, iniciar sesión y seleccionar `implementador-issue` o `revisor-pr`, sigue [`docs/onboarding.md`](../docs/onboarding.md). Las personas sin Copilot pueden ejecutar, probar y revisar el repositorio manualmente.
 
 Antes de cualquier tarea, lee `AGENTS.md`, `docs/framework.md`, `docs/roadmap.md` y las instrucciones aplicables dentro de las carpetas afectadas.
 
@@ -26,7 +26,14 @@ Cuando revises un PR:
 
 1. Lee el diff, el issue referenciado y la evidencia de CI.
 2. Comprueba la Definition of Done completa.
-3. Deja comentarios generales o sugerencias accionables.
-4. Etiqueta los hallazgos internos como `APPROVED`, `ITERATE` o `DOES_NOT_MEET_REQUIREMENTS`, dejando claro que no son aprobaciones de GitHub.
+3. Entrega al usuario hallazgos accionables y aspectos correctos; no publiques comentarios ni reviews en GitHub.
+4. Etiqueta el veredicto interno como `APPROVED`, `ITERATE` o `DOES_NOT_MEET_REQUIREMENTS`, aclarando que nunca es una aprobación de GitHub.
 
-El revisor no publica comentarios ni cambios. Produce sugerencias para revisión humana y nunca aprueba, solicita cambios formalmente, fusiona ni modifica código o checks.
+El revisor no modifica archivos o checks, no aprueba, no solicita cambios formalmente, no cierra ni fusiona issues o PRs. La revisión formal y cualquier acción en GitHub corresponden a una persona autorizada distinta del autor.
+
+## Agentes y límites
+
+- `implementador-issue` trabaja en el alcance aprobado y espera aprobación humana explícita del plan antes de editar. La aprobación del plan no autoriza cambios a archivos protegidos ni instalaciones: esas acciones requieren autorización específica adicional.
+- `revisor-pr` es exclusivamente consultivo. Si el entorno no proporciona acceso de lectura al PR, pide que se adjunten el diff, el issue y el estado de CI; no sustituyas ese contexto por operaciones de escritura.
+- No hagas commits, push, creación de PR, aprobación ni merge salvo autorización humana específica para una tarea y solo cuando el rol y las reglas aplicables lo permitan. Estos agentes no están autorizados a aprobar o fusionar su propio trabajo.
+- `.github/agent-permissions.json` y estas instrucciones son guardrails orientativos, no un sandbox ni una garantía de aislamiento. Comprueba las herramientas realmente disponibles y revisa toda operación y resultado.

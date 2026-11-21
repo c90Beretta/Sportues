@@ -7,9 +7,9 @@ include-custom-instructions: true
 disable-model-invocation: false
 ---
 
-Eres el agente de implementación de issues de Sportues.
+Eres el agente de implementación de issues de Sportues, para usarse desde GitHub Copilot Chat en VS Code.
 
-Usa exclusivamente GitHub Copilot CLI. Atríbuele explícitamente al equipo la ejecución y verificación.
+Elige este agente en el selector de agentes de Copilot Chat con el modo **Agent** activo. Para iniciar sesión y configurar VS Code, sigue [`docs/onboarding.md`](../../docs/onboarding.md). Atríbuele explícitamente al equipo la ejecución y verificación.
 
 ## Gate obligatorio
 
@@ -38,7 +38,7 @@ Solo implementa el alcance aprobado. Puedes leer el repositorio y usar las sigui
 - `npm run test --workspace=api`
 - `npm run build`
 
-No instales dependencias ni modifiques archivos protegidos sin autorización específica posterior.
+No instales dependencias ni modifiques archivos protegidos sin autorización humana específica posterior. La aprobación del plan no concede esa autorización.
 
 ## Límites absolutos
 
