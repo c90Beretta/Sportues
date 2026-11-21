@@ -13,14 +13,15 @@ Repositorio único (workspace de npm) con tres aplicaciones y un paquete compart
 
 ## Requisitos
 
-- Docker + extensión *Dev Containers* de VS Code (o `devcontainer` CLI).
-- No se requiere Node instalado localmente: todo corre dentro del devcontainer.
+- Git, Docker con Docker Compose, VS Code y la extensión *Dev Containers*.
+- No se requiere Node instalado en el equipo anfitrión si usás el Dev Container; el contenedor usa Node 24 y npm.
+- Consulta la [guía de onboarding](docs/onboarding.md) para instalación, variables de entorno, pruebas, producción y agentes de Copilot.
 
 ## Abrir en el devcontainer
 
 1. Cloná el repositorio y abrí la carpeta raíz en VS Code.
 2. Comando: **Dev Containers: Reopen in Container**.
-3. Al crearse, el contenedor instala dependencias de forma reproducible (`npm ci`), genera el cliente de Prisma y copia `apps/api/.env.example` a `apps/api/.env`.
+3. Al crearse, el contenedor ejecuta `npm ci`, compila `@gimnasio/shared`, genera Prisma Client y copia `apps/api/.env.example` a `apps/api/.env` solo si ese archivo aún no existe. No copia automáticamente los ejemplos de Admin ni Web.
 
 En el devcontainer:
 
@@ -28,6 +29,9 @@ En el devcontainer:
 npm run setup:db        # sincroniza el schema de Prisma con PostgreSQL
 npm run dev             # levanta las tres apps en paralelo
 npm run prisma:studio   # (opcional) explorar la base de datos
+npm run test:frontend   # Vitest
+npm run test --workspace=api
+npm run build
 ```
 
 Verificación del entorno compartido:
@@ -35,15 +39,16 @@ Verificación del entorno compartido:
 ```bash
 node --version
 git --version
-psql postgresql://usuario:password@db:5432/gimnasio -c "select 1;"
+psql "$DATABASE_URL" -c "select 1;"
 ```
 
 Si querés un usuario de prueba:
 
 ```bash
-npm run start --workspace=api -- --no-watch  # no es necesario en dev
-# Crea un staff/estudiante tocando la API (ver apps/api/README.md)
+npm run seed:admin
 ```
+
+El seed crea el administrador y los registros de padrón de prueba. Configurá `ADMIN_NOMBRE`, `ADMIN_EMAIL` y `ADMIN_PASSWORD` en el entorno del proceso antes de ejecutarlo; no uses sus valores predeterminados fuera de una base local desechable.
 
 ## Apps en desarrollo
 
@@ -63,13 +68,15 @@ npm run dev
 
 ## Variables de entorno
 
-Cada app tiene su `.env` (copiado desde `.env.example` por el devcontainer). Valores clave:
+Los ejemplos de entorno están en cada app, pero el setup automático solo copia el de API. Compose proporciona `DATABASE_URL`, `JWT_SECRET` y `PORT` al contenedor de trabajo. Valores clave:
 
-- `apps/api/.env` → `DATABASE_URL=postgresql://usuario:password@db:5432/gimnasio`, `JWT_SECRET`
+- `apps/api/.env` → `DATABASE_URL`, `JWT_SECRET`
 - `apps/admin/.env` → `API_URL=http://localhost:3000`, `JWT_SECRET`
 - `apps/web/.env` → `API_URL=http://localhost:3000`, `JWT_SECRET`
 
 `JWT_SECRET` es el mismo en las tres apps: la API lo firma y las apps lo verifican para validar sesiones.
+
+Los valores de ejemplo y Compose son solo para desarrollo local. Para una configuración detallada, incluida la ejecución desde el host y producción, consulta [docs/onboarding.md](docs/onboarding.md).
 
 ## Sesiones
 
@@ -83,6 +90,7 @@ Tres workflows en `.github/workflows/` (`api.yml`, `admin.yml`, `web.yml`). Cada
 
 ## Documentación
 
+- `docs/onboarding.md` — instalación, ejecución, pruebas, solución de problemas y Copilot Chat.
 - `docs/arquitectura.md` — arquitectura y decisiones de diseño.
 - `docs/project-proposal.md` — propuesta del proyecto para el issue de GitHub.
 - `docs/pair-log.md` — registro de sesiones reales de pair programming.
