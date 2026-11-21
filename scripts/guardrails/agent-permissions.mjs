@@ -33,6 +33,7 @@ export function analizarAgente(ruta) {
 function contieneOperacionMutativa(contenido) {
   const prohibidas = [
     /\bgit\s+(?:add|commit|push|merge|switch|checkout|branch|rebase|reset|cherry-pick)\b/i,
+    /\bgh\s+(?:issue|project)\b/i,
     /\bgh\s+(?:pr\s+(?:create|review|merge|close)|api|repo|release)\b/i,
     /\bgh\s+pr\s+comment\b/i,
     /\b(?:curl|wget)\b/i,
@@ -44,13 +45,26 @@ function contieneOperacionMutativa(contenido) {
   ];
 
   return contenido.split("\n").some((linea) => {
+    if (comandoIssueLocalPermitido(linea)) return false;
+    if (crearRamaIssuePermitida(linea)) return false;
     const ejecutable = /^(?:git|gh|curl|wget|bash|sh|zsh|node|python|python3|ruby|perl|php|npx|npm\s+exec|env|command|alias|source|sudo|doas|xargs)\b/i.test(linea.trim());
     return ejecutable && prohibidas.some((patron) => patron.test(linea));
   });
 }
 
+function crearRamaIssuePermitida(linea) {
+  return /^git switch -c (?:feature|bugfix)\/issue-\d{3,}-[a-z0-9]+(?:-[a-z0-9]+)*$/i.test(linea.trim());
+}
+
+function comandoIssueLocalPermitido(linea) {
+  const comando = linea.trim();
+  return /^node scripts\/tasks\/issues\.mjs (?:list(?: --ready)?|show ISSUE-\d{3,}|status ISSUE-\d{3,} (?:in_progress|in_review)|review ISSUE-\d{3,} (?:APPROVED|ITERATE|DOES_NOT_MEET_REQUIREMENTS) --finding "[^"$`;&|<>]+")$/.test(comando);
+}
+
 function contieneExpansionShell(contenido) {
   return contenido.split("\n").some((linea) => {
+    if (comandoIssueLocalPermitido(linea)) return false;
+    if (crearRamaIssuePermitida(linea)) return false;
     const ejecutable = /^(?:git|gh|curl|wget|bash|sh|zsh|node|python|python3|ruby|perl|php|npx|npm\s+exec|env|command|alias|source|sudo|doas|xargs)\b/i.test(linea.trim());
     if (!ejecutable) return false;
     return linea.includes("&&") ||
@@ -126,8 +140,11 @@ export function validarAgenteRevision(ruta) {
   if (herramientas.join("|") !== manifest.review.allowedTools.join("|")) {
     errores.push("Las herramientas del revisor no coinciden exactamente con el manifiesto.");
   }
-  if (herramientas.some((herramienta) => ["edit", "execute", "write"].includes(herramienta))) {
-    errores.push("El revisor no puede tener herramientas de edición o ejecución.");
+  if (herramientas.some((herramienta) => ["edit", "write"].includes(herramienta))) {
+    errores.push("El revisor no puede editar archivos directamente.");
+  }
+  if (!herramientas.includes("execute")) {
+    errores.push("El revisor necesita execute para registrar hallazgos mediante el CLI local.");
   }
   if (!/aprobar|aprueba|aprobación|nunca apruebes|no apruebes/i.test(contenido)) {
     errores.push("El revisor debe prohibir aprobación automática.");
@@ -135,7 +152,7 @@ export function validarAgenteRevision(ruta) {
   if (!/fusionar|fusiones|merge|fusión/i.test(contenido)) {
     errores.push("El revisor debe prohibir merge.");
   }
-  if (!/No puedes editar archivos|No puedes publicar comentarios|No puedes/i.test(contenido)) {
+  if (!/No puedes editar archivos|No puedes publicar comentarios|No puedes|No edites código ni archivos directamente/i.test(contenido)) {
     errores.push("El revisor debe declararse solo lectura y sin publicación.");
   }
   if (!/restricciones estáticas|no constituyen una sandbox/i.test(contenido)) {

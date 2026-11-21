@@ -1,32 +1,14 @@
 ---
-name: Task
-about: Trabajo técnico o de documentación sin cambio visible para el usuario
-title: "chore: "
-labels: task
+name: Task (deprecated)
+about: El backlog vigente se gestiona localmente; no crear Issues remotos
+title: "NO USAR: registrar en .tasks/"
+labels: []
 ---
 
-## Objetivo
+Este formulario se conserva como referencia histórica. No envíes una tarea mediante GitHub Issues.
 
-<!-- Qué se debe dejar hecho y por qué. -->
+Clona el repositorio y sigue [`.tasks/README.md`](../../.tasks/README.md) para crear el Issue local:
 
-## Criterios de aceptación
-
-**Criterio 1**
-- **Given** (estado actual del repo o del entorno)
-- **When** (se completa la tarea)
-- **Then** (qué se puede verificar: archivo, comando, check de CI, configuración)
-
-**Criterio 2**
-- **Given**
-- **When**
-- **Then**
-
-## Fuera de alcance
-
-## Notas
-
-## Definition of Ready
-
-- [ ] Tiene criterios de aceptación (Given / When / Then)
-- [ ] Tiene responsable asignado
-- [ ] No tiene bloqueos abiertos
+```bash
+node scripts/tasks/issues.mjs create --title "..." --type task
+```

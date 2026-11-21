@@ -1,31 +1,9 @@
 ---
-name: Project Proposal
-about: Propuesta del proyecto según Appendix E
-title: "Project Proposal"
-labels: [proposal]
-assignees: []
+name: Project Proposal (deprecated)
+about: La propuesta está versionada en docs/project-proposal.md
+title: "NO USAR: consultar docs/project-proposal.md"
+labels: []
 ---
 
-## Problema y solución en 30 segundos
-
-<!-- Describe el problema, a quién afecta y cómo lo resuelve la aplicación. -->
-
-## Usuarios objetivo
-
-<!-- Quién usará la aplicación y qué necesita. -->
-
-## Entidad primaria
-
-<!-- Define la entidad con al menos seis campos y sus validaciones. -->
-
-| Campo | Tipo | Regla |
-| --- | --- | --- |
-| | | |
-
-## Entidad relacionada (1:N)
-
-<!-- Define la relación, su cardinalidad y las reglas principales. -->
-
-## Alcance inicial
-
-<!-- Incluye las funcionalidades del primer milestone y lo que queda fuera. -->
+Este formulario se conserva como referencia histórica y no debe enviarse como GitHub Issue.
+La propuesta vigente está en [`docs/project-proposal.md`](../../docs/project-proposal.md).

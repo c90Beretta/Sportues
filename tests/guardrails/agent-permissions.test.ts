@@ -19,7 +19,7 @@ function escribir(nombre, contenido) {
 afterAll(() => fs.rmSync(temporal, { recursive: true, force: true }));
 
 describe("guardrail: agentes nativos de Copilot", () => {
-  it("acepta los agentes y elimina los archivos operativos de Claude", () => {
+  it("acepta los agentes locales de implementación y revisión", () => {
     expect(validarMigracionCopilot()).toEqual([]);
     expect(validarAgenteImplementacion(".github/agents/implementador-issue.agent.md")).toEqual([]);
     expect(validarAgenteRevision(".github/agents/revisor-pr.agent.md")).toEqual([]);
@@ -99,6 +99,8 @@ Las restricciones estáticas no constituyen una sandbox.
       "gh api graphql -f query='mutation { mergePullRequest }'",
       "curl -X PUT https://api.github.com/repos/c90Beretta/Sportues/pulls/10/merge",
       "node -e 'fetch(\"https://api.github.com/repos/x\")'",
+      "git switch main",
+      "git branch -D main",
     ]) {
       const ruta = escribir(`mutacion-${mutacion.replaceAll(/[^a-z0-9]/gi, "-")}.agent.md`, `---
 name: implementador-issue
@@ -119,6 +121,33 @@ ${mutacion}
 `);
       expect(validarAgenteImplementacion(ruta).length).toBeGreaterThan(0);
     }
+  });
+
+  it("permite solo crear ramas nuevas asociadas a un Issue local", () => {
+    const ruta = escribir("implementador-rama-segura.agent.md", `---
+name: implementador-issue
+description: prueba
+tools: ["read", "search", "edit", "execute"]
+strict-tools-list: true
+include-custom-instructions: true
+---
+¿Apruebas este plan antes de implementar?
+Las restricciones estáticas no constituyen una sandbox.
+git status
+git diff
+git switch -c feature/issue-001-nombre-corto
+git switch -c bugfix/issue-001-nombre-corto
+node scripts/tasks/issues.mjs list
+node scripts/tasks/issues.mjs list --ready
+node scripts/tasks/issues.mjs show ISSUE-001
+node scripts/tasks/issues.mjs status ISSUE-001 in_progress
+node scripts/tasks/issues.mjs status ISSUE-001 in_review
+npm run test:frontend
+npm run test --workspace=api
+npm run build
+Nunca crees, apruebes, cierres o fusiones un PR.
+`);
+    expect(validarAgenteImplementacion(ruta)).toEqual([]);
   });
 
   it("rechaza cadenas, sustitución, alias y wrappers", () => {
