@@ -88,11 +88,24 @@ Los valores de ejemplo y Compose son solo para desarrollo local. Para una config
 
 Tres workflows en `.github/workflows/` (`api.yml`, `admin.yml`, `web.yml`). Cada uno corre solo cuando cambian archivos de su app o de `packages/shared`.
 
+## Gestión local de Issues
+
+El backlog canónico está en [`.tasks/`](.tasks/README.md), versionado con Git. Después de clonar el repositorio, no necesitas tokens, permisos de Issues/Projects ni acceso a la API de GitHub para crear, consultar, asignar o actualizar tareas.
+
+```bash
+node scripts/tasks/issues.mjs list
+node scripts/tasks/issues.mjs create --title "Agregar reporte semanal" --type feature --priority medium
+node scripts/tasks/issues.mjs show ISSUE-001
+node scripts/tasks/issues.mjs check
+```
+
+Consulta [`.tasks/README.md`](.tasks/README.md) para filtrar, asignar, cambiar estados, revisar dependencias y archivar. Las referencias GitHub existentes se conservan solo como historial o en `github_issue` al migrar; no se consultan ni modifican remotamente.
+
 ## Documentación
 
 - `docs/onboarding.md` — instalación, ejecución, pruebas, solución de problemas y Copilot Chat.
 - `docs/arquitectura.md` — arquitectura y decisiones de diseño.
-- `docs/project-proposal.md` — propuesta del proyecto para el issue de GitHub.
+- `docs/project-proposal.md` — propuesta del proyecto.
 - `docs/pair-log.md` — registro de sesiones reales de pair programming.
-- `docs/github-setup.md` — configuración manual de branch protection y tablero.
+- `docs/github-setup.md` — configuración manual de branch protection; el backlog ya no usa GitHub Projects.
 - README de cada app con instrucciones específicas.

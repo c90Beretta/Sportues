@@ -1,21 +1,14 @@
 ---
-name: Bug
-about: Something that worked, or should work, does not
-labels: bug
+name: Bug (deprecated)
+about: El backlog vigente se gestiona localmente; no crear Issues remotos
+title: "NO USAR: registrar en .tasks/"
+labels: []
 ---
 
-**Severity:** high / medium / low
+Este formulario se conserva como referencia histórica. No envíes una tarea mediante GitHub Issues.
 
-**Steps to reproduce**
-1.
-2.
+Clona el repositorio y sigue [`.tasks/README.md`](../../.tasks/README.md) para crear el Issue local:
 
-**Expected**
-
-**Actual**
-
-**Evidence** (screenshot, error message, network log, failing test)
-
-**Done when**
-- [ ] Regression test added that fails before the fix
-- [ ] Fix merged, CI green
+```bash
+node scripts/tasks/issues.mjs create --title "..." --type bug --priority high
+```

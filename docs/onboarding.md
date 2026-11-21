@@ -150,6 +150,26 @@ npm run build --workspace=web
 npm run astro --workspace=web -- check
 ```
 
+## Backlog local
+
+Las tareas se administran desde `.tasks/` y se versionan con Git. El gestor usa Node.js y la dependencia `yaml` ya instalada; no requiere tokens, permisos de GitHub Issues/Projects ni llamadas a su API. La conexión a Internet mencionada en esta guía solo se necesita para clonar el repositorio y obtener dependencias/imágenes.
+
+Desde la raíz del repo:
+
+```bash
+node scripts/tasks/issues.mjs create --title "..." --type feature --priority medium
+node scripts/tasks/issues.mjs list
+node scripts/tasks/issues.mjs list --status ready
+node scripts/tasks/issues.mjs list --assignee nombre
+node scripts/tasks/issues.mjs list --priority high
+node scripts/tasks/issues.mjs list --ready
+node scripts/tasks/issues.mjs list --blocked
+node scripts/tasks/issues.mjs show ISSUE-001
+node scripts/tasks/issues.mjs check
+```
+
+Consulta [`.tasks/README.md`](../.tasks/README.md) para asignaciones, transiciones, dependencias, migración de referencias antiguas y archivo de Issues.
+
 ## Desarrollo y producción
 
 El Dev Container, sus credenciales y los ejemplos `.env.example` son exclusivamente para desarrollo local. En producción:
@@ -183,21 +203,21 @@ El proyecto contiene agentes personalizados para Copilot en `.github/agents/`. L
 4. Abre Copilot Chat, cambia el modo a **Agent** y abre el selector de agentes.
 5. Con el repositorio abierto como workspace, selecciona `implementador-issue` o `revisor-pr`. Los agentes se descubren desde sus archivos `.agent.md` en `.github/agents/`.
 
-Si un agente no aparece, confirma que abriste la raíz correcta del repositorio, que los archivos del agente no muestran errores y vuelve a cargar la ventana de VS Code. No todos los entornos exponen las mismas herramientas de GitHub: si el revisor no dispone de acceso de lectura al PR, proporciona el enlace y el diff, el issue relacionado y la evidencia de CI como contexto.
+Si un agente no aparece, confirma que abriste la raíz correcta del repositorio, que los archivos del agente no muestran errores y vuelve a cargar la ventana de VS Code. Los agentes de tareas usan exclusivamente IDs y datos locales; no necesitan iniciar sesión en GitHub para consultar o actualizar Issues.
 
 ### Elegir el agente adecuado
 
 **Implementación**: selecciona `implementador-issue` y usa, por ejemplo:
 
-> Inspecciona el issue #N, verifica sus criterios y propón un plan con archivos, pruebas y riesgos. No edites hasta que apruebe explícitamente el plan.
+> Implementa ISSUE-001. Lee sus dependencias y criterios locales, verifica que esté Ready, propón el plan con archivos, pruebas y riesgos. No edites hasta que apruebe explícitamente el plan.
 
-El agente debe leer el issue, presentar el plan y detenerse. Solo puede editar después de que una persona apruebe ese plan explícitamente. Esa aprobación del plan no autoriza a modificar archivos protegidos ni a instalar dependencias: para esas acciones se requiere autorización específica adicional.
+El agente debe leer `.tasks/issues/ISSUE-001.md`, presentar el plan y detenerse. Solo puede editar después de que una persona apruebe ese plan explícitamente. Tras la aprobación crea una rama nueva `feature/issue-001-...` o `bugfix/issue-001-...`, implementa, prueba y deja el Issue en `in_review`. Esa aprobación no autoriza a modificar archivos protegidos ni a instalar dependencias: para esas acciones se requiere autorización específica adicional.
 
 **Revisión**: selecciona `revisor-pr` y usa, por ejemplo:
 
-> Revisa el PR #N contra su issue, los criterios de aceptación, el template y CI. Devuelve hallazgos accionables y aspectos correctos; no publiques comentarios ni apruebes el PR.
+> Revisa localmente ISSUE-001 contra los criterios, el diff y las evidencias de CI. Registra hallazgos en el Issue local; no edites código ni apruebes o fusiones.
 
-La revisión es consultiva: el agente no debe editar, publicar comentarios o reviews, aprobar, solicitar cambios formalmente, cerrar ni fusionar. Una persona distinta del autor debe realizar la revisión y cualquier acción en GitHub.
+La revisión es consultiva: el agente no debe editar código, consultar Issues/Projects remotos, publicar comentarios o reviews, aprobar, solicitar cambios formalmente, cerrar ni fusionar. Puede agregar hallazgos al Issue local con el CLI. Una persona distinta del autor debe realizar la revisión humana y cualquier acción de PR.
 
 Los límites anteriores son instrucciones de trabajo, no una barrera de seguridad. `.github/agent-permissions.json` describe guardrails, pero ni ese archivo ni el prompt aíslan el proceso o garantizan que un agente o una herramienta no pueda ejecutar otra operación. Revisa las herramientas disponibles, los cambios y sus resultados antes de aceptar cualquier salida.
 

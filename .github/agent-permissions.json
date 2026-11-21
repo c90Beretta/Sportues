@@ -10,7 +10,13 @@
     "allowedShellCommands": [
       "git status",
       "git diff",
-      "gh issue view",
+      "git switch -c feature/issue-001-nombre-corto",
+      "git switch -c bugfix/issue-001-nombre-corto",
+      "node scripts/tasks/issues.mjs list",
+      "node scripts/tasks/issues.mjs list --ready",
+      "node scripts/tasks/issues.mjs show ISSUE-001",
+      "node scripts/tasks/issues.mjs status ISSUE-001 in_progress",
+      "node scripts/tasks/issues.mjs status ISSUE-001 in_review",
       "npm run test:frontend",
       "npm run test --workspace=api",
       "npm run build"
@@ -20,34 +26,36 @@
       "git commit",
       "git push",
       "git merge",
-      "git switch",
+      "git switch (except creation of a new feature/issue-<id>-<slug> or bugfix/issue-<id>-<slug> branch)",
       "git checkout",
-      "git branch",
+      "git branch mutation",
       "git rebase",
       "git reset",
       "gh pr create",
       "gh pr review",
       "gh pr merge",
+      "gh issue",
+      "gh project",
       "gh api",
       "graphql mutation"
     ]
   },
   "review": {
     "advisoryOnly": true,
-    "allowedTools": [
-      "read",
-      "search",
-      "github/*"
-    ],
+    "allowedTools": ["read", "search", "execute"],
     "allowedShellCommands": [
-      "gh pr view",
-      "gh pr diff"
+      "git status",
+      "git diff",
+      "node scripts/tasks/issues.mjs show ISSUE-001",
+      "node scripts/tasks/issues.mjs review ISSUE-001 ITERATE --finding \"Hallazgo accionable\""
     ],
     "commentPosting": "human-only",
     "deniedOperations": [
       "write",
       "edit",
-      "git",
+      "mutative Git commands",
+      "gh issue",
+      "gh project",
       "gh pr review",
       "gh pr merge",
       "gh api",

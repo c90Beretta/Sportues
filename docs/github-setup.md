@@ -1,6 +1,6 @@
-# Configuración de GitHub para Week 1
+# Configuración de GitHub para PRs
 
-Estas opciones se configuran en GitHub y no pueden imponerse desde archivos versionados.
+GitHub se conserva para alojar el repositorio y revisar/mergear PRs. La administración de tareas es local y no requiere configurar GitHub Issues ni GitHub Projects. Estas opciones de protección de rama se configuran en GitHub y no pueden imponerse desde archivos versionados.
 
 ## Reglas de `main`
 
@@ -13,32 +13,20 @@ En **Settings → Branches** crea una rule o ruleset para `main` con:
 5. Bloquear force pushes y eliminaciones.
 6. Incluir administradores en la regla.
 
-## Proposal e integrantes
+## Integrantes y sesiones
 
-1. Crea un issue usando el template **Project Proposal** y pega el contenido de `docs/project-proposal.md`.
-2. Confirma que ambos integrantes tienen acceso de escritura y clonan por SSH.
-3. Crea una rama por cambio, abre un pull request y solicita revisión del compañero.
-4. Registra la sesión real en `docs/pair-log.md` y alternen Driver/Navigator.
+1. Consulta la propuesta versionada en `docs/project-proposal.md`.
+2. Clona el repositorio con el acceso normal al repositorio Git.
+3. Registra la sesión real en `docs/pair-log.md` y alternen Driver/Navigator.
+4. Registra y asigna las tareas en `.tasks/issues/`; consulta `.tasks/README.md`.
 
-## Project board del framework (Sportues — M3)
+## Backlog de tareas
 
-Crea (o renombra) el tablero del repositorio con **exactamente** estos estados, en este orden. El campo `Status` del proyecto se edita en la UI (Project → ⋯ → Settings → Status):
+No crees ni mantengas un GitHub Project para el backlog. El equivalente local versionado se encuentra en `.tasks/`, con estados y transiciones validados por el CLI:
 
-1. Backlog
-2. Ready
-3. In progress
-4. In review
-5. Done
+```bash
+node scripts/tasks/issues.mjs list
+node scripts/tasks/issues.mjs check
+```
 
-Automatizaciones recomendadas (Project → Workflows): *Item added to project → Backlog*, *Pull request merged → Done*, *Item closed → Done*.
-
-Reglas de uso (están en `docs/framework.md`):
-- No muevas todo el tablero de golpe: cada tarjeta se mueve cuando el trabajo cambia de estado de verdad.
-- Al pasar a **In progress**, añade la etiqueta `in progress` al issue.
-- WIP máximo por persona: el definido en `docs/framework.md`.
-
-## Orden recomendado para L1–L2
-
-1. Ejecuta `scripts/github/bootstrap-github.sh` (crea etiquetas e issues del framework).
-2. Crea el tablero y vincula los issues.
-3. Recién entonces abre ramas y PRs con `Closes #N`.
+El script histórico `scripts/github/bootstrap-github.sh` está retirado y falla de forma explícita sin llamar a GitHub.

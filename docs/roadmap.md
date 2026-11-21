@@ -1,8 +1,13 @@
 # Roadmap
 
-Memoria del proyecto: qué está hecho y qué sigue. Cada checkbox enlaza a su issue. Cuando un PR termina un ítem, **marca el checkbox en el mismo PR**. Este archivo no se edita en bloque la noche del tag: las fechas del historial de Git se revisan.
+Memoria del proyecto: qué está hecho y qué sigue. Las referencias existentes se conservan como historial. Los Issues nuevos se registran en `.tasks/issues/` con IDs `ISSUE-NNN`; cuando un PR termina un ítem, actualiza el Issue y marca el checkbox correspondiente. Este archivo no se edita en bloque la noche del tag: las fechas del historial de Git se revisan.
 
-Los números `#N` los escribe `scripts/github/bootstrap-github.sh` al crear los issues; si ves `{{I:...}}` el script aún no se ejecutó.
+Los `#N` existentes son referencias históricas a GitHub Issues. No se consultan ni modifican remotamente. La migración local solo agrega datos comprobables en el repositorio; responsable, fechas, criterios o estado no recuperables quedan pendientes de triage.
+
+## Gestión local del backlog
+
+- [ ] Implementar el sistema de Issues Markdown local (`ISSUE-001`).
+- [ ] Refinar el reporte semanal de asistencia (`ISSUE-002`; detalles de alcance pendientes).
 
 ## Fase 0 — Kickoff (vie 13 nov) · L0
 
@@ -21,7 +26,7 @@ Los números `#N` los escribe `scripts/github/bootstrap-github.sh` al crear los 
 - [x] Bug: `web.yml` es YAML inválido, corregido con prueba de regresión (#12)
 - [x] Bug: secreto JWT por defecto en código, corregido con prueba de regresión (#11)
 - [ ] Protección de la rama `main` (#21)
-- [ ] GitHub Project `Sportues — M3 Framework` creado y vinculado; owner actual sin permisos para crear Projects
+- [x] GitHub Projects sustituido por el backlog versionado en `.tasks/`; el Project nunca se creó y ya no es requisito.
 - [ ] Archivo de contexto con "How this team works" + prueba en sesión fresca (#14)
 - [x] Al menos 2 ADRs de decisiones reales (#8)
 - [x] Comandos reutilizables y rol revisor (#10)
@@ -46,4 +51,4 @@ Los números `#N` los escribe `scripts/github/bootstrap-github.sh` al crear los 
 <!-- Una línea por issue de producto, con su checkbox, p. ej.:
 - [ ] Título del issue (#N)
 Cada issue debe existir ANTES de empezar el código. -->
-- [ ] Entrada/salida automática de asistencias con cierre de 150 minutos (#38)
+- [ ] Entrada/salida automática de asistencias con cierre de 150 minutos (#38; migración local pendiente de recuperar datos)

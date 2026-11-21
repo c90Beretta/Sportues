@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "nextIssueNumber": 3,
+  "statuses": [
+    "backlog",
+    "ready",
+    "in_progress",
+    "in_review",
+    "done",
+    "blocked"
+  ],
+  "transitions": {
+    "backlog": [
+      "ready",
+      "blocked"
+    ],
+    "ready": [
+      "backlog",
+      "in_progress",
+      "blocked"
+    ],
+    "in_progress": [
+      "ready",
+      "in_review",
+      "blocked"
+    ],
+    "in_review": [
+      "in_progress",
+      "done",
+      "blocked"
+    ],
+    "done": [
+      "in_progress"
+    ],
+    "blocked": [
+      "backlog",
+      "ready"
+    ]
+  }
+}

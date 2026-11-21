@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import { execFileSync } from "node:child_process";
-import { writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { parse } from "yaml";
 
 const REPO = "c90Beretta/Sportues";
 
@@ -62,13 +63,18 @@ for (const pr of detalles) {
   rondas.push(reviews.length);
 }
 
-const issues = ghJson(
-  "api",
-  `repos/${REPO}/issues?state=all&per_page=100`,
-);
-const escaped = issues.filter((issue) =>
-  issue.pull_request == null &&
-  issue.labels?.some((label) => label.name === "escaped"),
+const archivosIssue = [
+  ...readdirSync(".tasks/issues").map((nombre) => `.tasks/issues/${nombre}`),
+  ...readdirSync(".tasks/archive/closed").map((nombre) => `.tasks/archive/closed/${nombre}`),
+].filter((ruta) => ruta.endsWith(".md"));
+const issuesLocales = archivosIssue.map((ruta) => {
+  const contenido = readFileSync(ruta, "utf8");
+  const frontmatter = contenido.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1];
+  if (!frontmatter) throw new Error(`${ruta}: falta YAML Frontmatter`);
+  return parse(frontmatter);
+});
+const escaped = issuesLocales.filter((issue) =>
+  issue.type === "bug" && issue.labels?.includes("escaped"),
 );
 
 const aiLogged = detalles.filter((pr) =>
@@ -79,7 +85,7 @@ const markdown = `# Métricas L6
 
 Fecha de medición: ${new Date().toISOString().slice(0, 10)}
 
-Fuente: GitHub API de \`c90Beretta/Sportues\`. No se estimaron valores.
+Fuente: GitHub API para métricas de PR; Issues \`escaped\` desde \`.tasks/\`. No se estimaron valores.
 
 ## Método
 
