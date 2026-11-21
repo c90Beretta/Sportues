@@ -24,7 +24,12 @@ Why this fits us: Somos un equipo de 3 integrantes donde todos trabajamos como d
 
 States: Backlog → Ready → In progress → In review → Done
 
+Tablero GitHub Projects: no existe actualmente. Cuando el owner conceda permisos, crear
+`Sportues — M3 Framework` y vincularlo a `c90Beretta/Sportues`. Procedimiento reproducible:
+`docs/github-project.md`.
+
 Tablero: GitHub Projects del repositorio, una columna por estado. La columna `Status` es la fuente de verdad. Al mover una tarjeta a **In progress** se añade además la etiqueta `in progress` al issue (la usa `scripts/metrics.mjs` para calcular cycle time; ver `docs/metrics.md`).
+El Project `Sportues — M3 Framework` todavía no existe: el owner no concedió permisos de creación. El procedimiento reproducible está en `docs/github-project.md`.
 
 Definition of Ready (un issue pasa de Backlog a Ready solo si):
 - Tiene criterios de aceptación claros en formato Given / When / Then (concisos y directos al punto, adecuados al alcance de una entrega escolar).
@@ -74,7 +79,7 @@ Regla de regresión: todo bug fix añade una prueba que **falla antes del fix y 
 
 Regla anti-debilitamiento: nadie borra, salta (`skip`/`only`/`xit`), debilita ni silencia (`|| true`, `continue-on-error`) una prueba o un check para que CI pase. La revisión comprueba que los gates quedaron **más fuertes, no más débiles**. El piso de pruebas (`scripts/guardrails/test-floor.json`) solo puede subir y se compara contra `main`.
 
-Protección pendiente de activar en `main`: requerir PR, 1 aprobación y el check **Verificar monorepo** en verde; sin force-push. Pasos y script en `docs/github-setup.md`.
+Protección pendiente de verificar y activar en `main`: requerir PR, 1 aprobación y el check **Verificar monorepo** en verde; sin force-push. La API de GitHub no devuelve una regla configurable actualmente, por lo que la evidencia de aplicación sigue pendiente. Pasos y script en `docs/github-setup.md`.
 
 Why this fits us: Como los tres tocamos tanto frontend como backend en distintos momentos de la semana, estas validaciones automáticas nos protegen de integrar código que no compila o que rompe funcionalidades existentes de otro compañero. Tener los checks en CI y activar la protección de la rama `main` nos ayudará a evitar horas de depuración de último minuto antes de las entregas escolares y nos dará seguridad al hacer merge.
 
